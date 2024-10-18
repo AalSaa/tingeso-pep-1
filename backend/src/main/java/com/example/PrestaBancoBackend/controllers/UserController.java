@@ -18,12 +18,12 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    ResponseEntity<List<UserEntity>> getUsers() {
+    public ResponseEntity<List<UserEntity>> getUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<UserEntity> postUser(@RequestBody UserEntity user) {
+    public ResponseEntity<UserEntity> postUser(@RequestBody UserEntity user) {
         try {
             return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
         } catch (EntityExistsException e) {
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<UserEntity> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<UserEntity> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUserById(id);
             return new ResponseEntity<>(HttpStatus.OK);
