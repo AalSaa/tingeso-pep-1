@@ -18,4 +18,6 @@ public class LoanCreateDTO {
     private Integer termInYears;
     @JsonProperty("user_id")
     private Long userId;
+    @JsonProperty("loan_type_id")
+    private Long loanTypeId;
 }
