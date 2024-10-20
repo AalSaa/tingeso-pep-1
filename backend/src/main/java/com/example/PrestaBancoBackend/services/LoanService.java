@@ -4,12 +4,14 @@ import com.example.PrestaBancoBackend.dtos.LoanCreateDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
+import com.example.PrestaBancoBackend.repositories.DocumentRepository;
 import com.example.PrestaBancoBackend.repositories.LoanRepository;
 import com.example.PrestaBancoBackend.repositories.LoanTypeRepository;
 import com.example.PrestaBancoBackend.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,8 @@ public class LoanService {
     private UserRepository userRepository;
     @Autowired
     private LoanTypeRepository loanTypeRepository;
+    @Autowired
+    private DocumentRepository documentRepository;
 
     public List<LoanEntity> getAllLoans() {
         return loanRepository.findAll();
@@ -62,12 +66,9 @@ public class LoanService {
     }
 
     public void deleteLoanById(Long id) {
-        Optional<LoanEntity> loan = loanRepository.findById(id);
-
-        if (loan.isEmpty()) {
+        if (!loanRepository.existsById(id)) {
             throw new EntityNotFoundException("Loan not found");
         }
-
-        loanRepository.delete(loan.get());
+        loanRepository.deleteById(id);
     }
 }

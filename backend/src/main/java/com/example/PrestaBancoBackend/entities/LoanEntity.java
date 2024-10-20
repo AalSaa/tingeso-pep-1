@@ -1,5 +1,6 @@
 package com.example.PrestaBancoBackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -43,4 +44,8 @@ public class LoanEntity {
     @ManyToOne
     @JoinColumn(name = "loan_type_id")
     private LoanTypeEntity loanType;
+
+    @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DocumentEntity> documents;
 }

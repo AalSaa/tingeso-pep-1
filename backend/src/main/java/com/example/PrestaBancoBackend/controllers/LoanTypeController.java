@@ -20,12 +20,12 @@ public class LoanTypeController {
     private LoanTypeService loanTypeService;
 
     @GetMapping
-    ResponseEntity<List<LoanTypeEntity>> getLoanTypes() {
+    public ResponseEntity<List<LoanTypeEntity>> getLoanTypes() {
         return new ResponseEntity<>(loanTypeService.getAllLoanTypes(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<LoanTypeEntity> getLoanTypeById(@PathVariable Long id) {
+    public ResponseEntity<LoanTypeEntity> getLoanType(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(loanTypeService.getLoanTypeById(id), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
