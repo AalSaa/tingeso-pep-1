@@ -37,6 +37,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public UserEntity updateUser(UserEntity user) {
+        Optional<UserEntity> userOptional = userRepository.findById(user.getId());
+        if(userOptional.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        return userRepository.save(user);
+    }
+
     public void deleteUserById(Long id) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found");

@@ -40,6 +40,15 @@ public class UserController {
         }
     }
 
+    @PutMapping
+    public ResponseEntity<UserEntity> putUser(@RequestBody UserEntity user) {
+        try {
+            return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<UserEntity> deleteUser(@PathVariable Long id) {
         try {

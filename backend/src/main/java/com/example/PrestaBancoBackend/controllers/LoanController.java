@@ -37,6 +37,8 @@ public class LoanController {
             return new ResponseEntity<>(loanService.createLoan(loanDTO), HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
