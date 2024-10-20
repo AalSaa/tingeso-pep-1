@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/loan_types")
@@ -25,11 +27,13 @@ public class LoanTypeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LoanTypeEntity> getLoanType(@PathVariable Long id) {
+    public ResponseEntity<?> getLoanType(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(loanTypeService.getLoanTypeById(id), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
     }
 }

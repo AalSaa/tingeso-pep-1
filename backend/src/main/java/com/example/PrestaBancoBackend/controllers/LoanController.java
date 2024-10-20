@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/loans")
@@ -23,32 +25,42 @@ public class LoanController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LoanEntity> getLoan(@PathVariable Long id){
+    public ResponseEntity<?> getLoan(@PathVariable Long id){
         try {
             return new ResponseEntity<>(loanService.getLoanById(id), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping
-    public ResponseEntity<LoanEntity> postLoan(@RequestBody LoanCreateDTO loanDTO) {
+    public ResponseEntity<?> postLoan(@RequestBody LoanCreateDTO loanDTO) {
         try {
             return new ResponseEntity<>(loanService.createLoan(loanDTO), HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<LoanEntity> deleteLoan(@PathVariable Long id){
+    public ResponseEntity<?> deleteLoan(@PathVariable Long id){
         try {
             loanService.deleteLoanById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("error", true);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
     }
 }
