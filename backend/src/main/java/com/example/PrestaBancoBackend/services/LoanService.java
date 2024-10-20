@@ -8,7 +8,6 @@ import com.example.PrestaBancoBackend.repositories.LoanRepository;
 import com.example.PrestaBancoBackend.repositories.LoanTypeRepository;
 import com.example.PrestaBancoBackend.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +39,8 @@ public class LoanService {
     }
 
     public LoanEntity createLoan(LoanCreateDTO loanDTO) {
+        verifyLoanDTOData(loanDTO);
+
         Optional<UserEntity> possibleUser = userRepository.findById(loanDTO.getUserId());
         if (possibleUser.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -72,6 +73,24 @@ public class LoanService {
             throw new EntityNotFoundException("Loan not found");
         }
         loanRepository.deleteById(id);
+    }
+
+    public void verifyLoanDTOData(LoanCreateDTO loanDTO) {
+        if(loanDTO.getPropertyValue() == null || loanDTO.getPropertyValue().equals(BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("Property value is required");
+        }
+        if(loanDTO.getAmount() == null || loanDTO.getAmount().equals(BigDecimal.ZERO)) {
+            throw new IllegalArgumentException("Amount is required");
+        }
+        if(loanDTO.getTermInYears() == null || loanDTO.getTermInYears().equals(0)) {
+            throw new IllegalArgumentException("Term is required");
+        }
+        if(loanDTO.getLoanTypeId() == null) {
+            throw new IllegalArgumentException("Loan type id is required");
+        }
+        if(loanDTO.getUserId() == null) {
+            throw new IllegalArgumentException("User id is required");
+        }
     }
 
     public void verifyUserRestrictions(UserEntity user) {

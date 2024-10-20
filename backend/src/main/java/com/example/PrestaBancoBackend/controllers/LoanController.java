@@ -39,6 +39,10 @@ public class LoanController {
     public ResponseEntity<?> postLoan(@RequestBody LoanCreateDTO loanDTO) {
         try {
             return new ResponseEntity<>(loanService.createLoan(loanDTO), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (EntityNotFoundException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
@@ -46,7 +50,7 @@ public class LoanController {
         } catch (IllegalStateException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
         }
     }
 

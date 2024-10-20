@@ -39,7 +39,11 @@ public class UserController {
     public ResponseEntity<?> postUser(@RequestBody UserEntity user) {
         try {
             return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
-        } catch (EntityExistsException e) {
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (IllegalStateException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -50,10 +54,18 @@ public class UserController {
     public ResponseEntity<?> putUser(@RequestBody UserEntity user) {
         try {
             return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         } catch (EntityNotFoundException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        } catch (IllegalStateException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
         }
     }
 
