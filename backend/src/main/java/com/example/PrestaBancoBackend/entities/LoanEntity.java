@@ -24,6 +24,8 @@ public class LoanEntity {
     @Column(unique = true, nullable = false)
     private Long id;
 
+    @JsonProperty("property_value")
+    private BigDecimal propertyValue;
     private BigDecimal amount;
     @JsonProperty("term_in_years")
     private Integer termInYears;

@@ -1,6 +1,7 @@
 package com.example.PrestaBancoBackend.services;
 
 import com.example.PrestaBancoBackend.dtos.LoanCreateDTO;
+import com.example.PrestaBancoBackend.dtos.LoanResponseDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ public class LoanService {
         return loan.get();
     }
 
-    public LoanEntity createLoan(LoanCreateDTO loanDTO) {
+    public LoanResponseDTO createLoan(LoanCreateDTO loanDTO) {
         verifyLoanDTOData(loanDTO);
 
         Optional<UserEntity> possibleUser = userRepository.findById(loanDTO.getUserId());
@@ -58,14 +60,23 @@ public class LoanService {
         verifyLoanTypeRestrictions(loanDTO, loanType);
 
         LoanEntity loan = LoanEntity.builder()
+                .propertyValue(loanDTO.getPropertyValue())
                 .amount(loanDTO.getAmount())
                 .termInYears(loanDTO.getTermInYears())
-                .status("In Validation")
-                .user(user)
+                .annualInterestRate(loanDTO.getAnnualInterestRate())
+                .monthlyLifeInsurance(loanDTO.getMonthlyLifeInsurance())
+                .monthlyFireInsurance(loanDTO.getMonthlyFireInsurance())
+                .administrationFee(loanDTO.getAdministrationFee())
+                .status(loanDTO.getStatus())
                 .loanType(loanType)
+                .user(user)
                 .build();
 
-        return loanRepository.save(loan);
+        LoanEntity savedLoan = loanRepository.save(loan);
+        return LoanResponseDTO.builder()
+                .loan(savedLoan)
+                .monthlyCost(getMonthlyCost(savedLoan))
+                .build();
     }
 
     public void deleteLoanById(Long id) {
@@ -75,15 +86,46 @@ public class LoanService {
         loanRepository.deleteById(id);
     }
 
+    public BigDecimal getMonthlyCost(LoanEntity loan) {
+        int termInMonths = loan.getTermInYears() * 12;
+        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loan.getAnnualInterestRate())
+                .divide(BigDecimal.valueOf(12))
+                .divide(BigDecimal.valueOf(100));
+
+        BigDecimal numerator = loan.getAmount()
+                .multiply(monthlyInterestRate)
+                .multiply(monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths));
+        BigDecimal denominator = monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths)
+                .subtract(BigDecimal.ONE);
+
+        BigDecimal monthlyCost = numerator.divide(denominator, 0, RoundingMode.HALF_UP);
+        return monthlyCost;
+    }
+
     public void verifyLoanDTOData(LoanCreateDTO loanDTO) {
-        if(loanDTO.getPropertyValue() == null || loanDTO.getPropertyValue().equals(BigDecimal.ZERO)) {
-            throw new IllegalArgumentException("Property value is required");
+        if(loanDTO.getPropertyValue() == null || loanDTO.getPropertyValue().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Property value is empty or negative");
         }
-        if(loanDTO.getAmount() == null || loanDTO.getAmount().equals(BigDecimal.ZERO)) {
-            throw new IllegalArgumentException("Amount is required");
+        if(loanDTO.getAmount() == null || loanDTO.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Amount is empty or negative");
         }
-        if(loanDTO.getTermInYears() == null || loanDTO.getTermInYears().equals(0)) {
-            throw new IllegalArgumentException("Term is required");
+        if(loanDTO.getTermInYears() == null || loanDTO.getTermInYears() < 0) {
+            throw new IllegalArgumentException("Term is empty or negative");
+        }
+        if(loanDTO.getAnnualInterestRate() == null || loanDTO.getAnnualInterestRate() < 0.0) {
+            throw new IllegalArgumentException("Annual interest rate is empty or negative");
+        }
+        if(loanDTO.getMonthlyLifeInsurance() == null) {
+            throw new IllegalArgumentException("Monthly life insurance is required");
+        }
+        if(loanDTO.getMonthlyFireInsurance() == null) {
+            throw new IllegalArgumentException("Monthly fire insurance is required");
+        }
+        if(loanDTO.getAdministrationFee() == null) {
+            throw new IllegalArgumentException("Administration fee is required");
+        }
+        if(loanDTO.getStatus() == null || loanDTO.getStatus().equals("")) {
+            throw new IllegalArgumentException("Status is required");
         }
         if(loanDTO.getLoanTypeId() == null) {
             throw new IllegalArgumentException("Loan type id is required");
