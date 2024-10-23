@@ -41,8 +41,6 @@ public class LoanService {
     }
 
     public LoanResponseDTO createLoan(LoanCreateDTO loanDTO) {
-        verifyLoanDTOData(loanDTO);
-
         Optional<UserEntity> possibleUser = userRepository.findById(loanDTO.getUserId());
         if (possibleUser.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -100,39 +98,6 @@ public class LoanService {
 
         BigDecimal monthlyCost = numerator.divide(denominator, 0, RoundingMode.HALF_UP);
         return monthlyCost;
-    }
-
-    public void verifyLoanDTOData(LoanCreateDTO loanDTO) {
-        if(loanDTO.getPropertyValue() == null || loanDTO.getPropertyValue().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Property value is empty or negative");
-        }
-        if(loanDTO.getAmount() == null || loanDTO.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Amount is empty or negative");
-        }
-        if(loanDTO.getTermInYears() == null || loanDTO.getTermInYears() < 0) {
-            throw new IllegalArgumentException("Term is empty or negative");
-        }
-        if(loanDTO.getAnnualInterestRate() == null || loanDTO.getAnnualInterestRate() < 0.0) {
-            throw new IllegalArgumentException("Annual interest rate is empty or negative");
-        }
-        if(loanDTO.getMonthlyLifeInsurance() == null) {
-            throw new IllegalArgumentException("Monthly life insurance is required");
-        }
-        if(loanDTO.getMonthlyFireInsurance() == null) {
-            throw new IllegalArgumentException("Monthly fire insurance is required");
-        }
-        if(loanDTO.getAdministrationFee() == null) {
-            throw new IllegalArgumentException("Administration fee is required");
-        }
-        if(loanDTO.getStatus() == null || loanDTO.getStatus().equals("")) {
-            throw new IllegalArgumentException("Status is required");
-        }
-        if(loanDTO.getLoanTypeId() == null) {
-            throw new IllegalArgumentException("Loan type id is required");
-        }
-        if(loanDTO.getUserId() == null) {
-            throw new IllegalArgumentException("User id is required");
-        }
     }
 
     public void verifyUserRestrictions(UserEntity user) {

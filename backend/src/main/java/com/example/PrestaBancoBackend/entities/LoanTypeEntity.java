@@ -24,14 +24,19 @@ public class LoanTypeEntity {
     private Long id;
 
     private String name;
+
     @JsonProperty("max_term")
     private Integer maxTerm;
+
     @JsonProperty("min_annual_interest_rate")
     private Double minAnnualInterestRate;
+
     @JsonProperty("max_annual_interest_rate")
     private Double maxAnnualInterestRate;
+
     @JsonProperty("max_percentage_amount")
     private Integer maxPercentageAmount;
+
     @ElementCollection
     @JsonProperty("type_of_documents_required")
     private List<String> typeOfDocumentsRequired;

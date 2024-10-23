@@ -23,10 +23,15 @@ public class DocumentEntity {
     @Column(unique = true, nullable = false)
     private Long id;
 
+    @JsonProperty("file_name")
     private String fileName;
+
+    @JsonProperty("file_type")
     private String fileType;
+
     @Column(columnDefinition = "bytea")
     private byte[] data;
+
     @CreationTimestamp
     @JsonProperty("upload_date")
     private Date uploadDate;

@@ -29,8 +29,6 @@ public class UserService {
     }
 
     public UserEntity createUser(UserEntity user) {
-        verifyUserData(user);
-
         if(userRepository.existsByRut(user.getRut())) {
             throw new IllegalStateException("The rut is already used");
         }
@@ -44,8 +42,6 @@ public class UserService {
             throw new EntityNotFoundException("User not found");
         }
 
-        verifyUserData(user);
-
         if(userRepository.existsByRutAndIdNot(user.getRut(), user.getId())) {
             throw new IllegalStateException("The rut is already used");
         }
@@ -58,23 +54,5 @@ public class UserService {
             throw new EntityNotFoundException("User not found");
         }
         userRepository.deleteById(id);
-    }
-
-    public void verifyUserData(UserEntity user) {
-        if(user.getRut() == null || user.getRut().isEmpty()) {
-            throw new IllegalArgumentException("Rut is required");
-        }
-        if(user.getFirstName() == null || user.getFirstName().isEmpty()) {
-            throw new IllegalArgumentException("First name is required");
-        }
-        if(user.getLastName() == null || user.getLastName().isEmpty()) {
-            throw new IllegalArgumentException("Last name is required");
-        }
-        if(user.getBirthDate() == null) {
-            throw new IllegalArgumentException("Birth date is required");
-        }
-        if(user.getStatus() == null || user.getStatus().isEmpty()) {
-            throw new IllegalArgumentException("Status is required");
-        }
     }
 }

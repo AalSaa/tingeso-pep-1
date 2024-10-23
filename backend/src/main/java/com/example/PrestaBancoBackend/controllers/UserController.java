@@ -2,8 +2,7 @@ package com.example.PrestaBancoBackend.controllers;
 
 import com.example.PrestaBancoBackend.entities.UserEntity;
 import com.example.PrestaBancoBackend.services.UserService;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,61 +24,25 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<UserEntity> getUser(@PathVariable Long id) {
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> postUser(@RequestBody UserEntity user) {
-        try {
-            return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-        } catch (IllegalStateException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<UserEntity> postUser(@Valid @RequestBody UserEntity user) {
+        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<?> putUser(@RequestBody UserEntity user) {
-        try {
-            return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-        } catch (EntityNotFoundException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-        } catch (IllegalStateException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<UserEntity> putUser(@Valid @RequestBody UserEntity user) {
+        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        try {
-            userService.deleteUserById(id);
-            Map<String, Boolean> response = new HashMap<>();
-            response.put("error", true);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("error", true);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
