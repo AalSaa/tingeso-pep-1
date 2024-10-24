@@ -1,20 +1,32 @@
-package com.example.PrestaBancoBackend.dtos;
+package com.example.PrestaBancoBackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "evaluation_infos")
+
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluationCreateDTO {
+public class EvaluationInfoEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
+    private Long id;
+
     @NotNull(message = "Monthly income is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be positive")
     @JsonProperty("monthly_income")
@@ -31,7 +43,7 @@ public class EvaluationCreateDTO {
     @NotNull(message = "Employment seniority is required")
     @Min(value = 0, message = "Employment seniority must be positive")
     @JsonProperty("employment_seniority")
-    private int employmentSeniority;
+    private Integer employmentSeniority;
 
     @NotNull(message = "Monthly debt is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Monthly debt must be positive")
@@ -62,7 +74,8 @@ public class EvaluationCreateDTO {
     @JsonProperty("maximum_withdrawal_in_six_months")
     private BigDecimal maximumWithdrawalInSixMonths;
 
-    @NotNull(message = "Loan id is required")
-    @JsonProperty("loan_id")
-    private Long loanId;
+    @OneToOne
+    @JoinColumn(name = "evaluation_id", referencedColumnName = "id")
+    @JsonIgnore
+    private EvaluationEntity evaluation;
 }

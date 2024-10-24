@@ -65,6 +65,9 @@ public class LoanEntity {
     @NotEmpty(message = "Status is required")
     private String status;
 
+    @JsonProperty("monthly_cost")
+    private BigDecimal monthlyCost;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;

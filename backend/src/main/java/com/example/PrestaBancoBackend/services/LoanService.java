@@ -1,7 +1,6 @@
 package com.example.PrestaBancoBackend.services;
 
 import com.example.PrestaBancoBackend.dtos.LoanCreateDTO;
-import com.example.PrestaBancoBackend.dtos.LoanResponseDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
@@ -40,7 +39,7 @@ public class LoanService {
         return loan.get();
     }
 
-    public LoanResponseDTO createLoan(LoanCreateDTO loanDTO) {
+    public LoanEntity createLoan(LoanCreateDTO loanDTO) {
         Optional<UserEntity> possibleUser = userRepository.findById(loanDTO.getUserId());
         if (possibleUser.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -57,6 +56,8 @@ public class LoanService {
 
         verifyLoanTypeRestrictions(loanDTO, loanType);
 
+        BigDecimal monthlyCost = getMonthlyCost(loanDTO);
+
         LoanEntity loan = LoanEntity.builder()
                 .propertyValue(loanDTO.getPropertyValue())
                 .amount(loanDTO.getAmount())
@@ -66,15 +67,12 @@ public class LoanService {
                 .monthlyFireInsurance(loanDTO.getMonthlyFireInsurance())
                 .administrationFee(loanDTO.getAdministrationFee())
                 .status(loanDTO.getStatus())
+                .monthlyCost(monthlyCost)
                 .loanType(loanType)
                 .user(user)
                 .build();
 
-        LoanEntity savedLoan = loanRepository.save(loan);
-        return LoanResponseDTO.builder()
-                .loan(savedLoan)
-                .monthlyCost(getMonthlyCost(savedLoan))
-                .build();
+        return loanRepository.save(loan);
     }
 
     public void deleteLoanById(Long id) {
@@ -84,20 +82,19 @@ public class LoanService {
         loanRepository.deleteById(id);
     }
 
-    public BigDecimal getMonthlyCost(LoanEntity loan) {
-        int termInMonths = loan.getTermInYears() * 12;
-        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loan.getAnnualInterestRate())
+    public BigDecimal getMonthlyCost(LoanCreateDTO loanDTO) {
+        int termInMonths = loanDTO.getTermInYears() * 12;
+        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRate())
                 .divide(BigDecimal.valueOf(12))
                 .divide(BigDecimal.valueOf(100));
 
-        BigDecimal numerator = loan.getAmount()
+        BigDecimal numerator = loanDTO.getAmount()
                 .multiply(monthlyInterestRate)
                 .multiply(monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths));
         BigDecimal denominator = monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths)
                 .subtract(BigDecimal.ONE);
 
-        BigDecimal monthlyCost = numerator.divide(denominator, 0, RoundingMode.HALF_UP);
-        return monthlyCost;
+        return numerator.divide(denominator, 0, RoundingMode.HALF_UP);
     }
 
     public void verifyUserRestrictions(UserEntity user) {

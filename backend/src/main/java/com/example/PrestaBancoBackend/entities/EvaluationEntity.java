@@ -67,4 +67,7 @@ public class EvaluationEntity {
     @OneToOne
     @JoinColumn(name = "loan_id", referencedColumnName = "id")
     private LoanEntity loan;
+
+    @OneToOne(mappedBy = "evaluation", cascade = CascadeType.ALL)
+    private EvaluationInfoEntity evaluationInfo;
 }
