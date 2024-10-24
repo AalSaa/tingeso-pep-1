@@ -73,6 +73,10 @@ public class LoanEntity {
     @JoinColumn(name = "loan_type_id")
     private LoanTypeEntity loanType;
 
+    @OneToOne(mappedBy = "loan", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private EvaluationEntity evaluation;
+
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DocumentEntity> documents;
