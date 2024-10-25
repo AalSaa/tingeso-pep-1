@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Header } from "./layouts/Header"
 import { SideBar } from "./layouts/SideBar"
+import { SignupPage } from "./pages/SignupPage"
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <Header showSideBar={showSideBar} handleShowSideBar={handleShowSideBar}/>
       <div className="relative h-full">
         <SideBar showSideBar={showSideBar} handleShowSideBar={handleShowSideBar}/>
+        <SignupPage />
       </div>
     </div>
   )

@@ -28,25 +28,25 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException e) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", e.getMessage());
+        response.put("message", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, String>> handleIllegalStateException(IllegalStateException e) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", e.getMessage());
+        response.put("message", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
     @ExceptionHandler(IOException.class)
     public ResponseEntity<Map<String, String>> handleIOException(IOException e) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", e.getMessage());
+        response.put("message", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Map<String, String>> handleBadRequestException(BadRequestException e) {
         Map<String, String> response = new HashMap<>();
-        response.put("error", e.getMessage());
+        response.put("message", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
