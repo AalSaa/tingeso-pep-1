@@ -1,6 +1,6 @@
 package com.example.PrestaBancoBackend.controllers;
 
-import com.example.PrestaBancoBackend.dtos.LoanCreateDTO;
+import com.example.PrestaBancoBackend.dtos.LoanDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.services.LoanService;
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class LoanController {
     }
 
     @PostMapping
-    public ResponseEntity<LoanEntity> postLoan(@Valid @RequestBody LoanCreateDTO loanDTO) {
+    public ResponseEntity<LoanEntity> postLoan(@Valid @RequestBody LoanDTO loanDTO) {
         return new ResponseEntity<>(loanService.createLoan(loanDTO), HttpStatus.CREATED);
     }
 

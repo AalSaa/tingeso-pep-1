@@ -4,6 +4,7 @@ import { Header } from "./layouts/Header"
 import { SideBar } from "./layouts/SideBar"
 import { SignupPage } from "./pages/SignupPage"
 import { UsersPage } from "./pages/UsersPage"
+import { EditUserPage } from "./pages/EditUserPage";
 
 
 function App() {
@@ -21,8 +22,10 @@ function App() {
         <SideBar showSideBar={showSideBar} handleShowSideBar={handleShowSideBar}/>
         <Switch>
           <div className="mx-64">
+            <Route path="/edituser/:id" component={EditUserPage} />
             <Route path="/signup" component={SignupPage} />
             <Route path="/users" component={UsersPage} />
+            
           </div>
         </ Switch>
       </div>

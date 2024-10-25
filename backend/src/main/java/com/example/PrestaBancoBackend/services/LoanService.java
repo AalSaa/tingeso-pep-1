@@ -1,6 +1,6 @@
 package com.example.PrestaBancoBackend.services;
 
-import com.example.PrestaBancoBackend.dtos.LoanCreateDTO;
+import com.example.PrestaBancoBackend.dtos.LoanDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
@@ -39,7 +39,7 @@ public class LoanService {
         return loan.get();
     }
 
-    public LoanEntity createLoan(LoanCreateDTO loanDTO) {
+    public LoanEntity createLoan(LoanDTO loanDTO) {
         Optional<UserEntity> possibleUser = userRepository.findById(loanDTO.getUserId());
         if (possibleUser.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -82,7 +82,7 @@ public class LoanService {
         loanRepository.deleteById(id);
     }
 
-    public BigDecimal getMonthlyCost(LoanCreateDTO loanDTO) {
+    public BigDecimal getMonthlyCost(LoanDTO loanDTO) {
         int termInMonths = loanDTO.getTermInYears() * 12;
         BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRate())
                 .divide(BigDecimal.valueOf(12))
@@ -111,7 +111,7 @@ public class LoanService {
         }
     }
 
-    public void verifyLoanTypeRestrictions(LoanCreateDTO loanDTO, LoanTypeEntity loanType) {
+    public void verifyLoanTypeRestrictions(LoanDTO loanDTO, LoanTypeEntity loanType) {
         BigDecimal maxPercentage = BigDecimal.valueOf(loanType.getMaxPercentageAmount())
                 .divide(BigDecimal.valueOf(100));
 

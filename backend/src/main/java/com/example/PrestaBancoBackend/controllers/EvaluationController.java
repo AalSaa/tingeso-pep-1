@@ -1,6 +1,6 @@
 package com.example.PrestaBancoBackend.controllers;
 
-import com.example.PrestaBancoBackend.dtos.EvaluationCreateDTO;
+import com.example.PrestaBancoBackend.dtos.EvaluationDTO;
 import com.example.PrestaBancoBackend.entities.EvaluationEntity;
 import com.example.PrestaBancoBackend.services.EvaluationService;
 import jakarta.validation.Valid;
@@ -28,7 +28,7 @@ public class EvaluationController {
     }
 
     @PostMapping
-    public ResponseEntity<EvaluationEntity> postEvaluation(@Valid @RequestBody EvaluationCreateDTO evaluationDTO) {
+    public ResponseEntity<EvaluationEntity> postEvaluation(@Valid @RequestBody EvaluationDTO evaluationDTO) {
         return new ResponseEntity<>(evaluationService.createEvaluation(evaluationDTO), HttpStatus.CREATED);
     }
 }

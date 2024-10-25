@@ -1,31 +1,20 @@
-package com.example.PrestaBancoBackend.entities;
+package com.example.PrestaBancoBackend.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
-import java.util.List;
-
-@Entity
-@Table(name = "users")
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long id;
-
+public class UserDTO {
     @NotEmpty(message = "Rut is required")
     private String rut;
 
@@ -45,8 +34,4 @@ public class UserEntity {
 
     @NotEmpty(message = "Status is required")
     private String status;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<LoanEntity> loans;
 }

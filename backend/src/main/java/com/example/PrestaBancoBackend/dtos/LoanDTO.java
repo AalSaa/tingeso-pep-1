@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanCreateDTO {
+public class LoanDTO {
     @NotNull(message = "Property value is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Property value must be positive")
     @JsonProperty("property_value")

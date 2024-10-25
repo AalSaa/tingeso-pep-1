@@ -35,9 +35,9 @@ export const postUser = async (user) => {
     }
 }
 
-export const putUser = async (user) => {
+export const putUser = async (id, user) => {
     try {
-        const response = await axios.put(`${API_URL}`, user);
+        const response = await axios.put(`${API_URL}/${id}`, user);
         return response.data;
     } catch (error) {
         if (error.response.data.message) {

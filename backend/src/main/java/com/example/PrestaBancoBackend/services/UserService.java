@@ -1,5 +1,6 @@
 package com.example.PrestaBancoBackend.services;
 
+import com.example.PrestaBancoBackend.dtos.UserDTO;
 import com.example.PrestaBancoBackend.entities.UserEntity;
 import com.example.PrestaBancoBackend.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,25 +29,41 @@ public class UserService {
         return user.get();
     }
 
-    public UserEntity createUser(UserEntity user) {
-        if(userRepository.existsByRut(user.getRut())) {
+    public UserEntity createUser(UserDTO userDTO) {
+        if(userRepository.existsByRut(userDTO.getRut())) {
             throw new IllegalStateException("The rut is already used");
         }
 
+        UserEntity user = UserEntity.builder()
+                .rut(userDTO.getRut())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .birthDate(userDTO.getBirthDate())
+                .status(userDTO.getStatus())
+                .build();
         return userRepository.save(user);
     }
 
-    public UserEntity updateUser(UserEntity user) {
-        Optional<UserEntity> userOptional = userRepository.findById(user.getId());
+    public UserEntity updateUser(Long id, UserDTO userDTO) {
+        Optional<UserEntity> userOptional = userRepository.findById(id);
         if(userOptional.isEmpty()) {
             throw new EntityNotFoundException("User not found");
         }
 
-        if(userRepository.existsByRutAndIdNot(user.getRut(), user.getId())) {
+        if(userRepository.existsByRutAndIdNot(userDTO.getRut(), id)) {
             throw new IllegalStateException("The rut is already used");
         }
 
-        return userRepository.save(user);
+        UserEntity updatedUser = UserEntity.builder()
+                .id(id)
+                .rut(userDTO.getRut())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .birthDate(userDTO.getBirthDate())
+                .status(userDTO.getStatus())
+                .build();
+
+        return userRepository.save(updatedUser);
     }
 
     public void deleteUserById(Long id) {

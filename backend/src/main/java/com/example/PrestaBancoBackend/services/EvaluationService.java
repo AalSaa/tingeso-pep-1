@@ -1,6 +1,6 @@
 package com.example.PrestaBancoBackend.services;
 
-import com.example.PrestaBancoBackend.dtos.EvaluationCreateDTO;
+import com.example.PrestaBancoBackend.dtos.EvaluationDTO;
 import com.example.PrestaBancoBackend.entities.*;
 import com.example.PrestaBancoBackend.repositories.EvaluationInfoRepository;
 import com.example.PrestaBancoBackend.repositories.EvaluationRepository;
@@ -39,7 +39,7 @@ public class EvaluationService {
         return evaluation.get();
     }
 
-    public EvaluationEntity createEvaluation(EvaluationCreateDTO evaluationDTO) {
+    public EvaluationEntity createEvaluation(EvaluationDTO evaluationDTO) {
         Optional<LoanEntity> possibleLoan = loanRepository.findById(evaluationDTO.getLoanId());
 
         if (possibleLoan.isEmpty()) {
@@ -74,7 +74,7 @@ public class EvaluationService {
         return savedEvaluation;
     }
 
-    public EvaluationEntity analyzeEvaluationData(EvaluationCreateDTO evaluationDTO, LoanEntity loan) {
+    public EvaluationEntity analyzeEvaluationData(EvaluationDTO evaluationDTO, LoanEntity loan) {
 
         return EvaluationEntity.builder()
                 .isIncomeExpenseRatioValid(

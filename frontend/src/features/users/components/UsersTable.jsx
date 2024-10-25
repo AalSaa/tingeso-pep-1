@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { getUsers } from "../services/UserService";
 
 export function UsersTable() {
@@ -18,6 +19,13 @@ export function UsersTable() {
     },[])
 
 
+    const [, setLocation] = useLocation();
+
+    const handleEditClick = (id) => {
+        setLocation(`/edituser/${id}`);
+    }
+
+
     const UserRow = ({ user }) => {
         return (
             <tr className="odd:bg-white even:bg-slate-50">
@@ -26,7 +34,7 @@ export function UsersTable() {
                 <td className="p-4">{user.rut}</td>
                 <td className="p-4">{user.status}</td>
                 <td className="flex items-center p-2">
-                    <button
+                    <button onClick={() => handleEditClick(user.id)}
                     className="bg-yellow-500 text-white flex justify-between flex-1 rounded-lg p-2 mr-4">
                         <p>Editar</p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -50,9 +58,8 @@ export function UsersTable() {
        <div className="overflow-y-auto">
             <table
             className="w-full">
-                <thead
-                className="">
-                    <tr>
+                <thead>
+                    <tr className="bg-slate-50">
                         <th className="text-start p-4">Nombre</th>
                         <th className="text-start p-4">Apellido</th>
                         <th className="text-start p-4">Rut</th>

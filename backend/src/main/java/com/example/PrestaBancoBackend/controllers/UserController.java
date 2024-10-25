@@ -1,5 +1,6 @@
 package com.example.PrestaBancoBackend.controllers;
 
+import com.example.PrestaBancoBackend.dtos.UserDTO;
 import com.example.PrestaBancoBackend.entities.UserEntity;
 import com.example.PrestaBancoBackend.services.UserService;
 import jakarta.validation.Valid;
@@ -29,13 +30,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserEntity> postUser(@Valid @RequestBody UserEntity user) {
-        return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    public ResponseEntity<UserEntity> postUser(@Valid @RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<UserEntity> putUser(@Valid @RequestBody UserEntity user) {
-        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserEntity> putUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
+        return new ResponseEntity<>(userService.updateUser(id, userDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

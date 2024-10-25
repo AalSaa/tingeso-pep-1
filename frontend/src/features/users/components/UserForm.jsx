@@ -1,18 +1,4 @@
-import { useState } from "react"
-import { useLocation } from "wouter";
-import { postUser, getUsers } from "../services/UserService";
-
-export function SignupForm() {
-    const [user, setUser] = useState({
-        rut: "",
-        first_name: "",
-        last_name: "",
-        birth_date: "",
-        status: "In validation"
-    })
-
-    const [, setLocation] = useLocation();
-
+export function SignupForm({ user, setUser, submitForm}) {
     const handleChangeForm = (event) => {
         const { name, value } = event.target;
         setUser((prevUser) => ({
@@ -20,16 +6,6 @@ export function SignupForm() {
           [name]: value,
         }));
       };
-
-    const submitForm = async (event) => {
-        event.preventDefault();
-        try {
-            await postUser(user);
-            setLocation("/users");
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     return (
         <form>
