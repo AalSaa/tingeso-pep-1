@@ -1,7 +1,7 @@
-import { UserForm } from "../features/users/components/UserForm";
+import { SignupForm } from "../features/users/components/SignupForm";
 
 export function SignupPage() {
     return (
-        <UserForm />
+        <SignupForm />
     )
 }

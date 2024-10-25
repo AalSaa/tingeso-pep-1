@@ -1,7 +1,8 @@
 import { useState } from "react"
-import { postUser } from "../services/UserService";
+import { useLocation } from "wouter";
+import { postUser, getUsers } from "../services/UserService";
 
-export function UserForm() {
+export function SignupForm() {
     const [user, setUser] = useState({
         rut: "",
         first_name: "",
@@ -9,6 +10,8 @@ export function UserForm() {
         birth_date: "",
         status: "In validation"
     })
+
+    const [, setLocation] = useLocation();
 
     const handleChangeForm = (event) => {
         const { name, value } = event.target;
@@ -21,7 +24,8 @@ export function UserForm() {
     const submitForm = async (event) => {
         event.preventDefault();
         try {
-            postUser(user);
+            await postUser(user);
+            setLocation("/users");
         } catch (error) {
             console.error(error);
         }

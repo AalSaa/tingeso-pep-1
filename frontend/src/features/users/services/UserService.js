@@ -34,3 +34,18 @@ export const postUser = async (user) => {
         }
     }
 }
+
+export const putUser = async (user) => {
+    try {
+        const response = await axios.put(`${API_URL}`, user);
+        return response.data;
+    } catch (error) {
+        if (error.response.data.message) {
+            console.error(error.response.data.message);
+        } else if (error.response) {
+            console.error(error.response.data);
+        } else {
+            console.error(error);
+        }
+    }
+}

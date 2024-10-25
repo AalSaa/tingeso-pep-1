@@ -1,7 +1,9 @@
 import { useState } from "react"
+import { Route, Switch } from 'wouter';
 import { Header } from "./layouts/Header"
 import { SideBar } from "./layouts/SideBar"
 import { SignupPage } from "./pages/SignupPage"
+import { UsersPage } from "./pages/UsersPage"
 
 
 function App() {
@@ -15,9 +17,14 @@ function App() {
     <div
     className="flex flex-col h-screen">
       <Header showSideBar={showSideBar} handleShowSideBar={handleShowSideBar}/>
-      <div className="relative h-full">
+      <div className="relative flex-1 mt-16">
         <SideBar showSideBar={showSideBar} handleShowSideBar={handleShowSideBar}/>
-        <SignupPage />
+        <Switch>
+          <div className="mx-64">
+            <Route path="/signup" component={SignupPage} />
+            <Route path="/users" component={UsersPage} />
+          </div>
+        </ Switch>
       </div>
     </div>
   )

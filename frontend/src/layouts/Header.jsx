@@ -1,7 +1,7 @@
 export function Header({ showSideBar, handleShowSideBar }) {
     return (
         <header
-        className="bg-cyan-700 text-white flex justify-between items-center px-64 py-1">
+        className="bg-cyan-700 text-white fixed top-0 left-0 z-50 flex justify-between items-center w-full px-64 py-1">
             <button onClick={handleShowSideBar}
             className="p-4">
                 {showSideBar ? (
