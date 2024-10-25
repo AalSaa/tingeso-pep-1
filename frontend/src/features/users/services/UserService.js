@@ -49,3 +49,16 @@ export const putUser = async (id, user) => {
         }
     }
 }
+
+export const deleteUser = async (id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/${id}`);
+        return response.data;
+    } catch (error) {
+        if (error.response.data.message) {
+            console.error(error.response.data.message);
+        } else {
+            console.error(error);
+        }
+    }
+}
