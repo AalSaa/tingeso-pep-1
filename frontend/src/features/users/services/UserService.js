@@ -20,6 +20,15 @@ export const getUser = async (id) => {
     }
 }
 
+export const getUserByRut = async (rut) => {
+    try {
+        const response = await axios.get(`${API_URL}/rut/${rut}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export const postUser = async (user) => {
     try {
         const response = await axios.post(API_URL, user);

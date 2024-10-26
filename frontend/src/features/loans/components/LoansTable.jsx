@@ -1,74 +1,40 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import { getUsers, putUser, deleteUser } from "../services/UserService";
+import { getLoans } from "../services/LoanService";
 
-export function UsersTable() {
-    const [users, setUsers] = useState([]);
+export function LoanTable() {
+    const [loans, setLoans] = useState([]);
 
-    const [, setLocation] = useLocation();
-
-    const fetchUsers = async () => {
+    const fetchLoans = async () => {    
         try {
-            const fetchedUsers = await getUsers();
-            setUsers(fetchedUsers);
+            const fetchedLoans = await getLoans();
+            setLoans(fetchedLoans);
         } catch (error) {
             console.error(error);
         }
     }
 
     useEffect(() => {
-        fetchUsers();
-    },[])
-
-    const handleValidateClick = async (user) => {
-        try {
-            user.status = 'Active';
-            await putUser(user.id, user);
-            fetchUsers();
-        } catch (error) {
-            console.error(error);   
-        }
+        fetchLoans();
     }
-
-    const handleEditClick = (id) => {
-        setLocation(`/edituser/${id}`);
-    }
-
-    const handleDeleteClick = async (id) => {
-        try {
-            await deleteUser(id);
-            fetchUsers();
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    , []);
 
 
-    const UserRow = ({ user }) => {
+    const LoanRow = ({ loan }) => {
         return (
             <tr className="odd:bg-white even:bg-slate-50">
-                <td className="p-4">{user.first_name}</td>
-                <td className="p-4">{user.last_name}</td>
-                <td className="p-4">{user.rut}</td>
-                <td className="p-4">{user.status}</td>
+                <td className="p-4">{loan.user.rut}</td>
+                <td className="p-4">{loan.loanType.name}</td>
+                <td className="p-4">{loan.amount}</td>
+                <td className="p-4">{loan.status}</td>
                 <td className="flex items-center p-2 space-x-2">
-                    {(user.status == 'In validation') ? (
-                        <button onClick={() => handleValidateClick(user)}
-                        className="bg-lime-500 text-white flex justify-between flex-1 rounded-lg p-2">
-                            <p>Validar</p>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                            <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                            </svg>
-                        </button>
-                    ) : null}
-                    <button onClick={() => handleEditClick(user.id)}
+                    <button
                     className="bg-yellow-500 text-white flex justify-between flex-1 rounded-lg p-2">
                         <p>Editar</p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
                         <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z" />
                         </svg>  
                     </button>
-                    <button onClick={() => handleDeleteClick(user.id)}
+                    <button
                     className="bg-red-500 text-white flex justify-between flex-1 rounded-lg p-2">
                         <p>Borrar</p>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
@@ -85,16 +51,16 @@ export function UsersTable() {
             <table className="w-full">
                 <thead>
                     <tr className="bg-slate-50">
-                        <th className="text-start p-4">Nombre</th>
-                        <th className="text-start p-4">Apellido</th>
-                        <th className="text-start p-4">Rut</th>
+                        <th className="text-start p-4">Rut del solicitante</th>
+                        <th className="text-start p-4">Tipo</th>
+                        <th className="text-start p-4">Monto</th>
                         <th className="text-start p-4">Estado</th>
                         <th className="text-start w-80 p-4">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {users?.map((user, index) => (
-                        <UserRow key={index} user={user} />
+                    {loans?.map((loan) => (
+                        <LoanRow key={loan.id} loan={loan} />
                     ))}
                 </tbody>
             </table>

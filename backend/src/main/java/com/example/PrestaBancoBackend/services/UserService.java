@@ -29,6 +29,16 @@ public class UserService {
         return user.get();
     }
 
+    public UserEntity getUserByRut(String rut) {
+        Optional<UserEntity> user = userRepository.findByRut(rut);
+
+        if(user.isEmpty()) {
+            throw new EntityNotFoundException("User not found");
+        }
+
+        return user.get();
+    }
+
     public UserEntity createUser(UserDTO userDTO) {
         if(userRepository.existsByRut(userDTO.getRut())) {
             throw new IllegalStateException("The rut is already used");

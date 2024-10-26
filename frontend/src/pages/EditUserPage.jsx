@@ -14,16 +14,17 @@ export function EditUserPage() {
     const [match, params] = useRoute("/edituser/:id");
     const [, setLocation] = useLocation();
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const user = await getUser(params.id);
-                setUser(user);
-                console.log(user);
-            } catch (error) {
-                console.error(error);
-            }
+    const fetchUser = async () => {
+        try {
+            const fetchedUser = await getUser(params.id);
+            setUser(fetchedUser);
+            console.log(fetchedUser);
+        } catch (error) {
+            console.error(error);
         }
+    }
+
+    useEffect(() => {
         fetchUser();
     }, [match, params.id])
 
@@ -40,5 +41,4 @@ export function EditUserPage() {
     return (
         <SignupForm user={user} setUser={setUser} submitForm={submitForm}/>
     )
-
 }

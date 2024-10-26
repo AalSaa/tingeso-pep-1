@@ -1,12 +1,4 @@
-export function SignupForm({ user, setUser, submitForm}) {
-    const handleChangeForm = (event) => {
-        const { name, value } = event.target;
-        setUser((prevUser) => ({
-          ...prevUser,
-          [name]: value,
-        }));
-      };
-
+export function SignupForm({ user, setUser, submitForm }) {
     return (
         <form>
             <div>
@@ -15,7 +7,7 @@ export function SignupForm({ user, setUser, submitForm}) {
                 id="first_name"
                 name="first_name"
                 value={user.first_name}
-                onChange={handleChangeForm}
+                onChange={(e) => setUser({ ...user, first_name: e.target.value })}
                 type="text" 
                 placeholder="Ingrese su nombre"
                 />
@@ -26,7 +18,7 @@ export function SignupForm({ user, setUser, submitForm}) {
                 id="last_name"
                 name="last_name"
                 value={user.last_name}
-                onChange={handleChangeForm}
+                onChange={(e) => setUser({ ...user, last_name: e.target.value })}
                 type="text" 
                 placeholder="Ingrese su apellido"
                 />
@@ -37,7 +29,7 @@ export function SignupForm({ user, setUser, submitForm}) {
                 id="rut"
                 name="rut"
                 value={user.rut}
-                onChange={handleChangeForm}
+                onChange={(e) => setUser({ ...user, rut: e.target.value })}
                 type="text" 
                 placeholder="Ingrese su rut"
                 />
@@ -48,7 +40,7 @@ export function SignupForm({ user, setUser, submitForm}) {
                 id="birth_date"
                 name="birth_date"
                 value={user.birth_date}
-                onChange={handleChangeForm}
+                onChange={(e) => setUser({ ...user, birth_date: e.target.value })}
                 type="date" />
             </div>
             <button onClick={submitForm}>Registrar cliente</button>

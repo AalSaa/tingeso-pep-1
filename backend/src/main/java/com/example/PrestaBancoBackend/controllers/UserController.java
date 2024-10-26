@@ -29,6 +29,11 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/rut/{rut}")
+    public ResponseEntity<UserEntity> getUserByRut(@PathVariable String rut) {
+        return new ResponseEntity<>(userService.getUserByRut(rut), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<UserEntity> postUser(@Valid @RequestBody UserDTO userDTO) {
         return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);

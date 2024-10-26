@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { postUser } from "../features/users/services/UserService";
 import { SignupForm } from "../features/users/components/UserForm";
 
-export function SignupPage() {
+export function AddUserPage() {
     const [, setLocation] = useLocation();
 
     const [user, setUser] = useState({

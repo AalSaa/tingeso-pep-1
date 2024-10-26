@@ -2,9 +2,11 @@ import { useState } from "react"
 import { Route, Switch } from 'wouter';
 import { Header } from "./layouts/Header"
 import { SideBar } from "./layouts/SideBar"
-import { SignupPage } from "./pages/SignupPage"
+import { AddUserPage } from "./pages/AddUserPage"
 import { UsersPage } from "./pages/UsersPage"
 import { EditUserPage } from "./pages/EditUserPage";
+import { LoansPage } from "./pages/LoansPage";
+import { ApplyLoanPage } from "./pages/ApplyLoanPage";
 
 
 function App() {
@@ -23,9 +25,10 @@ function App() {
         <Switch>
           <div className="mx-64">
             <Route path="/edituser/:id" component={EditUserPage} />
-            <Route path="/signup" component={SignupPage} />
+            <Route path="/adduser" component={AddUserPage} />
             <Route path="/users" component={UsersPage} />
-            
+            <Route path="/loans" component={LoansPage} />
+            <Route path="/applyloan" component={ApplyLoanPage} />
           </div>
         </ Switch>
       </div>

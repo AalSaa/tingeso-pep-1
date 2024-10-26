@@ -11,7 +11,7 @@ export function SideBar({ showSideBar, handleShowSideBar }) {
                <Link>Inicio</Link>
                <Link href="/users">Clientes</Link>
                <Link>Simulación</Link>
-               <Link>Prestamo</Link>
+               <Link href="/loans">Préstamo</Link>
                <Link>Evaluación</Link>
             </section>
         </aside>
