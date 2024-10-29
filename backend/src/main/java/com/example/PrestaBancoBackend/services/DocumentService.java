@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,16 @@ public class DocumentService {
 
     public List<DocumentEntity> getAllDocuments() {
         return documentRepository.findAll();
+    }
+
+    public List<DocumentEntity> getAllDocumentsByLoanId(Long loanId) {
+        Optional<LoanEntity> possibleLoan = loanRepository.findById(loanId);
+
+        if (possibleLoan.isEmpty()) {
+            throw new EntityNotFoundException("Loan not found");
+        }
+
+        return documentRepository.findAllByLoanId(loanId);
     }
 
     public DocumentEntity getDocumentById(Long id) {

@@ -1,18 +1,9 @@
 import { useState, useEffect } from "react";
-import { getUserByRut } from "../../users/services/UserService";
 import { getLoanTypes } from "../services/LoanTypeService";
 import { postLoan } from "../services/LoanService";
+import { getDocumentsByLoanId } from "../../documents/services/DocumentService";
 
-export function LoanForm() {
-    const [user, setUser] = useState({
-        id: "",
-        rut: "",
-        first_name: "",
-        last_name: "",
-        birth_date: "",
-        status: "",
-    })
-
+export function LoanForm({ user, loan, setLoan }) {
     const [loanTypes, setLoanTypes] = useState([]);
 
     const [loanType, setLoanType] = useState({
@@ -24,18 +15,7 @@ export function LoanForm() {
         type_of_documents_required: [],
     })
 
-    const [loan, setLoan] = useState({
-        property_value: "",
-        amount: "",
-        term_in_years: "",
-        annual_interest_rate: "",
-        monthly_life_insurance: "0",
-        monthly_fire_insurance: "0",
-        administration_fee: "0",
-        status: "In validation",
-        user_id: "",
-        loan_type_id: "",
-    })
+    const [documents, setDocuments] = useState([]);
 
     const fetchLoanTypes = async () => {
         try {
@@ -51,45 +31,43 @@ export function LoanForm() {
         fetchLoanTypes();
     }, [])
 
-    const handleLoanTypeChange = (value) => {
-        setLoanType(loanTypes[value - 1]);
-    };
-
-    const submitUserForm = async (event) => {
-        event.preventDefault();
+    const fetchedDocuments = async (loanId) => {
         try {
-            const fetchedUser = await getUserByRut(user.rut);
-            setUser(fetchedUser);
-            console.log(fetchedUser);
+            if (loanId) {
+                const fetchedDocuments = await getDocumentsByLoanId(loanId);
+                setDocuments(fetchedDocuments);
+                console.log(fetchedDocuments);
+            }
         } catch (error) {
             console.error(error);
         }
     }
 
+    useEffect(() => {
+        fetchedDocuments(loan.id);
+    }, [loan.id])
+
+    const handleLoanTypeChange = (value) => {
+        setLoanType(loanTypes[value - 1]);
+    };
+
     const submitLoanForm = async (event) => {
         event.preventDefault();
-        loan.user_id = user.id;
-        loan.loan_type_id = loanType.id;
-        await postLoan(loan);
-        console.log(loan);
+        try {
+            const updatedLoan = { ...loan, user_id: user.id, loan_type_id: loanType.id };
+            const postedLoan = await postLoan(updatedLoan);
+            if (postedLoan) {
+                setLoan(postedLoan);
+                console.log(postedLoan);
+            }
+        } catch (error) {
+            setLoan({});
+            console.error(error);
+        }
     }
 
     return (
         <div>
-            <form action="">
-                <div>
-                    <label htmlFor="">Rut del solicitante</label>
-                    <input 
-                    id="rut"
-                    name="rut"
-                    value={user.rut}
-                    onChange={(e) => setUser({ ...user, rut: e.target.value })}
-                    placeholder="Ingrese el rut del solicitante"
-                    type="text" 
-                    />
-                </div>
-                <button onClick={submitUserForm}>Buscar usuario</button>
-            </form>
             <form action="">
                 <div>
                     <label htmlFor="">Tipo de prestamo</label>
@@ -156,6 +134,13 @@ export function LoanForm() {
                 </div>
                 <button onClick={submitLoanForm}>Enviar solicitud</button>
             </form>
+            <div>{documents?.map((document) => (
+                <div key={document.id}>
+                    <p>{document.file_name}</p>
+                    <button onClick={() => console.log('Button clicked!')}>Nuevo Botón</button>
+                </div>
+                ))}
+            </div>
         </div>
     )
 }

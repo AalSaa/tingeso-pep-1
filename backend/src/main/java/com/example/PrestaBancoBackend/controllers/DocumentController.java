@@ -3,8 +3,7 @@ package com.example.PrestaBancoBackend.controllers;
 import com.example.PrestaBancoBackend.entities.DocumentEntity;
 import com.example.PrestaBancoBackend.services.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,9 +23,26 @@ public class DocumentController {
         return new ResponseEntity<>(documentService.getAllDocuments(), HttpStatus.OK);
     }
 
+    @GetMapping("/loan/{loanId}")
+    public ResponseEntity<List<DocumentEntity>> getDocumentsByLoanId(@PathVariable Long loanId) {
+        return new ResponseEntity<>(documentService.getAllDocumentsByLoanId(loanId), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DocumentEntity> getDocument(@PathVariable Long id) {
         return new ResponseEntity<>(documentService.getDocumentById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<byte[]> downloadDocument(@PathVariable Long id) {
+        DocumentEntity document = documentService.getDocumentById(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(document.getFileType()));
+        headers.setContentDispositionFormData("attachment", document.getFileName());
+        headers.add("Access-Control-Expose-Headers", "Content-Disposition");
+
+        return new ResponseEntity<>(document.getData(), headers, HttpStatus.OK);
     }
 
     @PostMapping
