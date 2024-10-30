@@ -39,6 +39,6 @@ export function EditUserPage() {
     }
 
     return (
-        <SignupForm user={user} setUser={setUser} submitForm={submitForm}/>
+        <SignupForm user={user} setUser={setUser} submitForm={submitForm} isEdit={true}/>
     )
 }

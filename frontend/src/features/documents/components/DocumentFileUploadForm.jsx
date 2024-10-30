@@ -20,16 +20,20 @@ export function DocumentFileUploadForm({ loanId }) {
     }
 
     return (
-        <form action="">
+        <form action="" className="bg-slate-50 space-y-8 w-96 rounded-2xl p-4">
             <div>
-                <label htmlFor="">Archivos</label>
+                <label htmlFor="">Archivo</label>
                 <input 
                 id="file"
                 name="file"
                 onChange={(e) => setFile(e.target.files[0])}
-                type="file"/>
+                type="file"
+                className="bg-white border w-full rounded-lg p-2"
+                />
             </div>
-            <button onClick={submitDocumentForm}>Subir archivo</button>
+            <button onClick={submitDocumentForm} className="bg-lime-500 text-white w-full rounded-lg p-2">
+                Subir archivo
+            </button>
         </form>
     )
 }

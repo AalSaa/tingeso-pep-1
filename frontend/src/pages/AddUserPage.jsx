@@ -25,6 +25,8 @@ export function AddUserPage() {
     }
 
     return (
-        <SignupForm user={user} setUser={setUser} submitForm={submitForm}/>
+        <div className="flex justify-center items-center h-full">
+            <SignupForm user={user} setUser={setUser} submitForm={submitForm} isEdit={false}/>
+        </div>
     )
 }
