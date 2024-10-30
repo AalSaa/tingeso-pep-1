@@ -47,10 +47,10 @@ export function UsersTable() {
     const UserRow = ({ user }) => {
         return (
             <tr className="odd:bg-white even:bg-slate-50">
-                <td className="p-4">{user.first_name}</td>
-                <td className="p-4">{user.last_name}</td>
-                <td className="p-4">{user.rut}</td>
-                <td className="p-4">{user.status}</td>
+                <td className="text-start p-4">{user.first_name}</td>
+                <td className="text-start p-4">{user.last_name}</td>
+                <td className="text-start p-4">{user.rut}</td>
+                <td className="text-start p-4">{user.status}</td>
                 <td className="flex items-center p-2 space-x-2">
                     {(user.status == 'In validation') ? (
                         <button onClick={() => handleValidateClick(user)}

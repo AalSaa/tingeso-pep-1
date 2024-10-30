@@ -7,6 +7,7 @@ import { UsersPage } from "./pages/UsersPage"
 import { EditUserPage } from "./pages/EditUserPage";
 import { LoansPage } from "./pages/LoansPage";
 import { ApplyLoanPage } from "./pages/ApplyLoanPage";
+import { DocumentsPage } from "./pages/DocumentsPage";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/users" component={UsersPage} />
             <Route path="/loans" component={LoansPage} />
             <Route path="/applyloan" component={ApplyLoanPage} />
+            <Route path="/loan/:id/documents" component={DocumentsPage} />
           </div>
         </ Switch>
       </div>

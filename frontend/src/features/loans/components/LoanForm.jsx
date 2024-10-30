@@ -5,21 +5,7 @@ import { getDocumentsByLoanId } from "../../documents/services/DocumentService";
 export function LoanForm({ user, loanType, loan, setLoan, submitForm }) {
     const [documents, setDocuments] = useState([]);
 
-    const fetchedDocuments = async (loanId) => {
-        try {
-            if (loanId) {
-                const fetchedDocuments = await getDocumentsByLoanId(loanId);
-                setDocuments(fetchedDocuments);
-                console.log(fetchedDocuments);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    useEffect(() => {
-        fetchedDocuments(loan.id);
-    }, [loan.id])
+    
 
     return (
         <div>

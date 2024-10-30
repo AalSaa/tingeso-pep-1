@@ -1,6 +1,7 @@
 package com.example.PrestaBancoBackend.services;
 
 import com.example.PrestaBancoBackend.dtos.LoanDTO;
+import com.example.PrestaBancoBackend.dtos.LoanUpdateDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
@@ -75,6 +76,37 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
+    public LoanEntity updateLoan(Long id, LoanUpdateDTO loanDTO) {
+        Optional<LoanEntity> possibleLoan = loanRepository.findById(id);
+
+        if (possibleLoan.isEmpty()) {
+            throw new EntityNotFoundException("Loan not found");
+        }
+
+        LoanEntity loan = possibleLoan.get();
+
+        verifyLoanTypeRestrictions(loanDTO, loan.getLoanType());
+
+        BigDecimal monthlyCost = getMonthlyCost(loanDTO);
+
+        LoanEntity updatedLoan = LoanEntity.builder()
+                .id(loan.getId())
+                .propertyValue(loanDTO.getPropertyValue())
+                .amount(loanDTO.getAmount())
+                .termInYears(loanDTO.getTermInYears())
+                .annualInterestRate(loanDTO.getAnnualInterestRate())
+                .monthlyLifeInsurance(loanDTO.getMonthlyLifeInsurance())
+                .monthlyFireInsurance(loanDTO.getMonthlyFireInsurance())
+                .administrationFee(loanDTO.getAdministrationFee())
+                .status(loanDTO.getStatus())
+                .monthlyCost(monthlyCost)
+                .loanType(loan.getLoanType())
+                .user(loan.getUser())
+                .build();
+
+        return loanRepository.save(updatedLoan);
+    }
+
     public void deleteLoanById(Long id) {
         if (!loanRepository.existsById(id)) {
             throw new EntityNotFoundException("Loan not found");
@@ -83,6 +115,21 @@ public class LoanService {
     }
 
     public BigDecimal getMonthlyCost(LoanDTO loanDTO) {
+        int termInMonths = loanDTO.getTermInYears() * 12;
+        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRate())
+                .divide(BigDecimal.valueOf(12))
+                .divide(BigDecimal.valueOf(100));
+
+        BigDecimal numerator = loanDTO.getAmount()
+                .multiply(monthlyInterestRate)
+                .multiply(monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths));
+        BigDecimal denominator = monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths)
+                .subtract(BigDecimal.ONE);
+
+        return numerator.divide(denominator, 0, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getMonthlyCost(LoanUpdateDTO loanDTO) {
         int termInMonths = loanDTO.getTermInYears() * 12;
         BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRate())
                 .divide(BigDecimal.valueOf(12))
@@ -112,6 +159,21 @@ public class LoanService {
     }
 
     public void verifyLoanTypeRestrictions(LoanDTO loanDTO, LoanTypeEntity loanType) {
+        BigDecimal maxPercentage = BigDecimal.valueOf(loanType.getMaxPercentageAmount())
+                .divide(BigDecimal.valueOf(100));
+
+        BigDecimal maxAllowedAmount = loanDTO.getPropertyValue().multiply(maxPercentage);
+
+        if (loanDTO.getAmount().compareTo(maxAllowedAmount) > 0) {
+            throw new IllegalStateException("Amount exceeds max allowed amount");
+        }
+
+        if (loanDTO.getTermInYears() > loanType.getMaxTerm()) {
+            throw new IllegalStateException("The term limit exceeded");
+        }
+    }
+
+    public void verifyLoanTypeRestrictions(LoanUpdateDTO loanDTO, LoanTypeEntity loanType) {
         BigDecimal maxPercentage = BigDecimal.valueOf(loanType.getMaxPercentageAmount())
                 .divide(BigDecimal.valueOf(100));
 

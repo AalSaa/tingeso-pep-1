@@ -25,3 +25,12 @@ export const postLoan = async (loan) => {
         }
     }
 }
+
+export const putLoan = async (id, loan) => {
+    try {
+        const response = await axios.put(`${API_URL}/${id}`, loan);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}

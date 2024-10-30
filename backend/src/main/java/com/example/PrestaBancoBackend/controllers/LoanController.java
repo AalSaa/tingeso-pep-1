@@ -1,6 +1,7 @@
 package com.example.PrestaBancoBackend.controllers;
 
 import com.example.PrestaBancoBackend.dtos.LoanDTO;
+import com.example.PrestaBancoBackend.dtos.LoanUpdateDTO;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.services.LoanService;
 import jakarta.validation.Valid;
@@ -32,6 +33,11 @@ public class LoanController {
     @PostMapping
     public ResponseEntity<LoanEntity> postLoan(@Valid @RequestBody LoanDTO loanDTO) {
         return new ResponseEntity<>(loanService.createLoan(loanDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<LoanEntity> putLoan(@PathVariable Long id, @Valid @RequestBody LoanUpdateDTO loanDTO) {
+        return new ResponseEntity<>(loanService.updateLoan(id, loanDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

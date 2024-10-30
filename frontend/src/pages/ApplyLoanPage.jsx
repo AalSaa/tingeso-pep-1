@@ -34,7 +34,7 @@ export function ApplyLoanPage() {
         monthly_life_insurance: "0",
         monthly_fire_insurance: "0",
         administration_fee: "0",
-        status: "Falta de documentos",
+        status: "Pendiente de Documentación",
         user_id: "",
         loan_type_id: "",
     })
