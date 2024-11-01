@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 
 import { getLoans, putLoan } from "../services/LoanService";
+import { postEvaluationResult } from "../../evaluations/services/EvaluationResultService";
 
 export function LoanTable() {
     const [loans, setLoans] = useState([]);
@@ -24,6 +25,33 @@ export function LoanTable() {
 
     const handleRedirectToDocumentsClick = (loanId) => {
         setLocation(`/loan/${loanId}/documents`);
+    }
+
+    const handleRedirectToAddEvaluationClick = (loanId) => {
+        setLocation(`/loan/${loanId}/evaluation`);
+    }
+
+    const handleRedirectToEditEvaluationEditClick = (loanId) => {
+        setLocation(`/loan/${loanId}/evaluation/edit`);
+    }
+
+    const handleGenerateEvaluationClick = async (loan) => {
+        try {
+            const response = await postEvaluationResult(loan.id);
+            if (response) {
+                if (response.evaluation_result == 'Rejected') {
+                    loan.status = 'Rechazada';
+                } else if (response.evaluation_result == 'Requires a additional review') {
+                    loan.status = 'Requiere revisión adicional';
+                } else {
+                    loan.status = 'Pre-Aprobada';
+                }
+                await putLoan(loan.id , loan);
+                fetchLoans();
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const handleChangeStatusToInitialRevisionClick = async (loan) => {
@@ -73,15 +101,27 @@ export function LoanTable() {
                         </button>
                     ) : null}
                     {(loan.status == "Revisión Inicial") ? (
-                        <button
-                        className="bg-lime-500 text-white flex justify-between rounded-lg p-2">
+                        <button onClick={(e) => handleRedirectToAddEvaluationClick(loan.id)}
+                        className="bg-lime-500 text-white flex justify-center rounded-lg p-2">
                             <p>Evaluar</p>
                         </button>
                     ) : null}
                     {(loan.status == "Revisión Inicial") ? (
                         <button onClick={(e) => handleChangeStatusToPendingDocumentationClick(loan)}
-                        className="bg-red-500 text-white flex justify-between flex-1 rounded-lg p-2">
+                        className="bg-red-500 text-white flex justify-center flex-1 rounded-lg p-2">
                             <p>Faltan documentos</p>
+                        </button>
+                    ) : null}
+                    {(loan.status == "En Evaluación") ? (
+                        <button onClick={(e) => handleRedirectToEditEvaluationEditClick(loan.id)}
+                        className="bg-yellow-500 text-white flex justify-center rounded-lg p-2">
+                            <p>Editar info</p>
+                        </button>
+                    ) : null}
+                    {(loan.status == "En Evaluación") ? (
+                        <button onClick={(e) => handleGenerateEvaluationClick(loan)}
+                        className="bg-lime-500 text-white flex justify-center flex-1 rounded-lg p-2">
+                            <p>Generar evaluación</p>
                         </button>
                     ) : null}
                 </td>
@@ -98,7 +138,7 @@ export function LoanTable() {
                         <th className="text-start p-4">Tipo</th>
                         <th className="text-start p-4">Monto</th>
                         <th className="text-start p-4">Estado</th>
-                        <th className="text-start w-80 p-4">Acciones</th>
+                        <th className="text-start w-96 p-4">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>

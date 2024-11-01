@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluationDTO {
+public class EvaluationInfoUpdateDTO {
     @NotNull(message = "Monthly income is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be positive")
     @JsonProperty("monthly_income")
@@ -61,8 +61,4 @@ public class EvaluationDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Maximum withdrawal in six months must be positive")
     @JsonProperty("maximum_withdrawal_in_six_months")
     private BigDecimal maximumWithdrawalInSixMonths;
-
-    @NotNull(message = "Loan id is required")
-    @JsonProperty("loan_id")
-    private Long loanId;
 }

@@ -39,6 +39,8 @@ export function EditUserPage() {
     }
 
     return (
-        <SignupForm user={user} setUser={setUser} submitForm={submitForm} isEdit={true}/>
+        <div className="flex justify-center items-center h-full">
+            <SignupForm user={user} setUser={setUser} submitForm={submitForm} isEdit={true}/>
+        </div>
     )
 }

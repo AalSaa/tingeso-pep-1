@@ -1,32 +1,20 @@
-package com.example.PrestaBancoBackend.entities;
+package com.example.PrestaBancoBackend.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "evaluation_infos")
-
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluationInfoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long id;
-
+public class EvaluationInfoDTO {
     @NotNull(message = "Monthly income is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be positive")
     @JsonProperty("monthly_income")
@@ -43,7 +31,7 @@ public class EvaluationInfoEntity {
     @NotNull(message = "Employment seniority is required")
     @Min(value = 0, message = "Employment seniority must be positive")
     @JsonProperty("employment_seniority")
-    private Integer employmentSeniority;
+    private int employmentSeniority;
 
     @NotNull(message = "Monthly debt is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Monthly debt must be positive")
@@ -74,11 +62,7 @@ public class EvaluationInfoEntity {
     @JsonProperty("maximum_withdrawal_in_six_months")
     private BigDecimal maximumWithdrawalInSixMonths;
 
-    @OneToOne
-    @JoinColumn(name = "loan_id", referencedColumnName = "id")
-    private LoanEntity loan;
-
-    @OneToOne(mappedBy = "evaluationInfo", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private EvaluationResultEntity evaluationResult;
+    @NotNull(message = "Loan id is required")
+    @JsonProperty("loan_id")
+    private Long loanId;
 }

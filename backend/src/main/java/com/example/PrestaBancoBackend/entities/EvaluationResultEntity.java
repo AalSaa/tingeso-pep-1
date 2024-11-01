@@ -9,13 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "evaluations")
+@Table(name = "evaluation_results")
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvaluationEntity {
+public class EvaluationResultEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -65,9 +65,6 @@ public class EvaluationEntity {
     private String evaluationResult;
 
     @OneToOne
-    @JoinColumn(name = "loan_id", referencedColumnName = "id")
-    private LoanEntity loan;
-
-    @OneToOne(mappedBy = "evaluation", cascade = CascadeType.ALL)
+    @JoinColumn(name = "evaluation_info_id", referencedColumnName = "id")
     private EvaluationInfoEntity evaluationInfo;
 }

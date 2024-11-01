@@ -1,9 +1,8 @@
 package com.example.PrestaBancoBackend.services;
 
-import com.example.PrestaBancoBackend.dtos.EvaluationDTO;
 import com.example.PrestaBancoBackend.entities.*;
 import com.example.PrestaBancoBackend.repositories.EvaluationInfoRepository;
-import com.example.PrestaBancoBackend.repositories.EvaluationRepository;
+import com.example.PrestaBancoBackend.repositories.EvaluationResultRepository;
 import com.example.PrestaBancoBackend.repositories.LoanRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +16,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EvaluationService {
+public class EvaluationResultService {
     @Autowired
-    private EvaluationRepository evaluationRepository;
+    private EvaluationResultRepository evaluationResultRepository;
     @Autowired
     private LoanRepository loanRepository;
     @Autowired
     private EvaluationInfoRepository evaluationInfoRepository;
 
-    public List<EvaluationEntity> getAllEvaluations() {
-        return evaluationRepository.findAll();
+    public List<EvaluationResultEntity> getAllEvaluations() {
+        return evaluationResultRepository.findAll();
     }
 
-    public EvaluationEntity getEvaluationById(Long id) {
-        Optional<EvaluationEntity> evaluation = evaluationRepository.findById(id);
+    public EvaluationResultEntity getEvaluationById(Long id) {
+        Optional<EvaluationResultEntity> evaluation = evaluationResultRepository.findById(id);
 
         if (evaluation.isEmpty()) {
             throw new EntityNotFoundException("Evaluation not found");
@@ -39,8 +38,8 @@ public class EvaluationService {
         return evaluation.get();
     }
 
-    public EvaluationEntity createEvaluation(EvaluationDTO evaluationDTO) {
-        Optional<LoanEntity> possibleLoan = loanRepository.findById(evaluationDTO.getLoanId());
+    public EvaluationResultEntity generateEvaluationResult(Long loanId) {
+        Optional<LoanEntity> possibleLoan = loanRepository.findById(loanId);
 
         if (possibleLoan.isEmpty()) {
             throw new EntityNotFoundException("Loan not found");
@@ -48,86 +47,77 @@ public class EvaluationService {
 
         LoanEntity loan = possibleLoan.get();
 
-        EvaluationEntity evaluation = analyzeEvaluationData(evaluationDTO, loan);
+        Optional<EvaluationInfoEntity> possibleEvaluationInfo =
+                evaluationInfoRepository.findById(loan.getEvaluationInfo().getId());
+
+        if (possibleEvaluationInfo.isEmpty()) {
+            throw new EntityNotFoundException("Evaluation info not found");
+        }
+
+        EvaluationInfoEntity evaluationInfo = possibleEvaluationInfo.get();
+
+        EvaluationResultEntity evaluation = analyzeEvaluationData(evaluationInfo, loan);
 
         evaluation.setEvaluationResult(getEvaluationResult(evaluation));
-        evaluation.setLoan(loan);
+        evaluation.setEvaluationInfo(evaluationInfo);
 
-        EvaluationEntity savedEvaluation = evaluationRepository.save(evaluation);
-
-        EvaluationInfoEntity evaluationInfo = EvaluationInfoEntity.builder()
-                .monthlyIncome(evaluationDTO.getMonthlyIncome())
-                .havePositiveCreditHistory(evaluationDTO.getHavePositiveCreditHistory())
-                .employmentType(evaluationDTO.getEmploymentType())
-                .employmentSeniority(evaluationDTO.getEmploymentSeniority())
-                .monthlyDebt(evaluationDTO.getMonthlyDebt())
-                .savingsAccountBalance(evaluationDTO.getSavingsAccountBalance())
-                .hasPeriodicDeposits(evaluationDTO.getHasPeriodicDeposits())
-                .sumOfDeposits(evaluationDTO.getSumOfDeposits())
-                .oldSavingsAccount(evaluationDTO.getOldSavingsAccount())
-                .maximumWithdrawalInSixMonths(evaluationDTO.getMaximumWithdrawalInSixMonths())
-                .evaluation(savedEvaluation)
-                .build();
-
-        evaluationInfoRepository.save(evaluationInfo);
-
-        return savedEvaluation;
+        return evaluationResultRepository.save(evaluation);
     }
 
-    public EvaluationEntity analyzeEvaluationData(EvaluationDTO evaluationDTO, LoanEntity loan) {
+    public EvaluationResultEntity analyzeEvaluationData(EvaluationInfoEntity evaluationInfo, LoanEntity loan) {
 
-        return EvaluationEntity.builder()
+        return EvaluationResultEntity.builder()
                 .isIncomeExpenseRatioValid(
-                        analyzeIncomeExpenseRatio(loan.getMonthlyCost(), evaluationDTO.getMonthlyIncome())
+                        analyzeIncomeExpenseRatio(loan.getMonthlyCost(), evaluationInfo.getMonthlyIncome())
                 )
                 .isCreditHistoryValid(
-                        analyzeCreditHistory(evaluationDTO.getHavePositiveCreditHistory())
+                        analyzeCreditHistory(evaluationInfo.getHavePositiveCreditHistory())
                 )
                 .isEmploymentStabilityValid(
                         analyzeEmploymentStability(
-                                evaluationDTO.getEmploymentType(),
-                                evaluationDTO.getEmploymentSeniority()
+                                evaluationInfo.getEmploymentType(),
+                                evaluationInfo.getEmploymentSeniority()
                         )
                 )
                 .isDebtIncomeRatioValid(
                         analyzeDebtIncomeRatio(
-                                evaluationDTO.getMonthlyDebt(),
+                                evaluationInfo.getMonthlyDebt(),
                                 loan.getMonthlyCost(),
-                                evaluationDTO.getMonthlyIncome()
+                                evaluationInfo.getMonthlyIncome()
                         )
                 )
                 .isAgeAtLoanEndValid(
                         analyzeAgeAtLoanEnd(loan.getUser().getBirthDate())
                 )
                 .isMinimumBalanceRequiredValid(
-                        analyzeMinimumBalanceRequired(evaluationDTO.getSavingsAccountBalance(), loan.getAmount())
+                        analyzeMinimumBalanceRequired(evaluationInfo.getSavingsAccountBalance(), loan.getAmount())
                 )
                 .isConsistentSavingsHistoryValid(
-                        analyzeConsistentSavingsHistory(evaluationDTO.getHavePositiveCreditHistory())
+                        analyzeConsistentSavingsHistory(evaluationInfo.getHavePositiveCreditHistory())
                 )
                 .isPeriodicDepositsValid(
                         analyzePeriodicDeposits(
-                                evaluationDTO.getHasPeriodicDeposits(),
-                                evaluationDTO.getSumOfDeposits(),
-                                evaluationDTO.getMonthlyIncome()
+                                evaluationInfo.getHasPeriodicDeposits(),
+                                evaluationInfo.getSumOfDeposits(),
+                                evaluationInfo.getMonthlyIncome()
                         )
                 )
                 .isBalanceYearsRatioValid(
                         analyzeBalanceYearsRatio(
-                                evaluationDTO.getOldSavingsAccount(),
-                                evaluationDTO.getSavingsAccountBalance(),
+                                evaluationInfo.getOldSavingsAccount(),
+                                evaluationInfo.getSavingsAccountBalance(),
                                 loan.getAmount()
                         )
                 )
                 .isRecentWithdrawalsValid(
                         analyzeRecentWithdrawals(
-                                evaluationDTO.getMaximumWithdrawalInSixMonths(),
-                                evaluationDTO.getSavingsAccountBalance())
+                                evaluationInfo.getMaximumWithdrawalInSixMonths(),
+                                evaluationInfo.getSavingsAccountBalance())
                 )
                 .build();
     }
 
-    public String getEvaluationResult(EvaluationEntity entity) {
+    public String getEvaluationResult(EvaluationResultEntity entity) {
         int nValidatedSavingsCapacityRules = 0;
 
         if (entity.getIsMinimumBalanceRequiredValid()) {

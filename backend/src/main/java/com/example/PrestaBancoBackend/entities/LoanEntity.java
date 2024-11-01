@@ -78,7 +78,7 @@ public class LoanEntity {
 
     @OneToOne(mappedBy = "loan", cascade = CascadeType.ALL)
     @JsonIgnore
-    private EvaluationEntity evaluation;
+    private EvaluationInfoEntity evaluationInfo;
 
     @OneToMany(mappedBy = "loan", cascade = CascadeType.ALL)
     @JsonIgnore

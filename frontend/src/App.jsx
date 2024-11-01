@@ -8,6 +8,8 @@ import { EditUserPage } from "./pages/EditUserPage";
 import { LoansPage } from "./pages/LoansPage";
 import { ApplyLoanPage } from "./pages/ApplyLoanPage";
 import { DocumentsPage } from "./pages/DocumentsPage";
+import { AddEvaluationPage } from "./pages/AddEvaluationPage";
+import { EditEvaluationPage } from "./pages/EditEvaluationPage";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
             <Route path="/loans" component={LoansPage} />
             <Route path="/applyloan" component={ApplyLoanPage} />
             <Route path="/loan/:id/documents" component={DocumentsPage} />
+            <Route path={"/loan/:id/evaluation"} component={AddEvaluationPage} />
+            <Route path="/loan/:id/evaluation/edit" component={EditEvaluationPage} />
           </div>
         </ Switch>
       </div>
