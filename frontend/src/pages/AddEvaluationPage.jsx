@@ -35,6 +35,10 @@ export function AddEvaluationPage() {
         }
     }
 
+    useEffect(() => {
+        fetchedLoan();
+    }, [match, params.id])
+
     const changeStatusToInEvaluation = async (loan) => {
         try {
             loan.status = 'En Evaluación';
@@ -58,10 +62,6 @@ export function AddEvaluationPage() {
             console.error(error);
         }
     }
-
-    useEffect(() => {
-        fetchedLoan();
-    }, [match, params.id])
 
     return (
         <div className="flex justify-center items-center h-full">

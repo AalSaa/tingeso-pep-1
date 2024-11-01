@@ -51,10 +51,10 @@ export function LoanForm({ user, loanType, loan, setLoan, submitForm }) {
                     <div>
                         <label htmlFor="" className="block ml-2">Tasa de interes</label>
                         <input
-                        id="annual_interest_rate"
-                        name="annual_interest_rate"
-                        value={loan.annual_interest_rate}
-                        onChange={(e) => setLoan({ ...loan, annual_interest_rate: e.target.value })}
+                        id="annual_interest_rate_percentage"
+                        name="annual_interest_rate_percentage"
+                        value={loan.annual_interest_rate_percentage}
+                        onChange={(e) => setLoan({ ...loan, annual_interest_rate_percentage: e.target.value })}
                         placeholder="Ingrese la tasa de interes"
                         type="number"
                         className="border w-full rounded-lg p-2"

@@ -29,25 +29,25 @@ public class LoanUpdateDTO {
     @JsonProperty("term_in_years")
     private Integer termInYears;
 
-    @NotNull(message = "Annual interest rate is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Annual interest rate must be positive")
-    @JsonProperty("annual_interest_rate")
-    private Double annualInterestRate;
+    @NotNull(message = "Annual interest percentage rate is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Annual interest percentage rate must be positive")
+    @JsonProperty("annual_interest_rate_percentage")
+    private Double annualInterestRatePercentage;
 
-    @NotNull(message = "Monthly life insurance is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Monthly life insurance must be positive")
-    @JsonProperty("monthly_life_insurance")
-    private Double monthlyLifeInsurance;
+    @NotNull(message = "Monthly life insurance percentage is required")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Monthly life insurance percentage must be positive")
+    @JsonProperty("monthly_life_insurance_percentage")
+    private Double monthlyLifeInsurancePercentage;
 
-    @NotNull(message = "Monthly fire insurance is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Monthly fire insurance must be positive")
-    @JsonProperty("monthly_fire_insurance")
-    private Double monthlyFireInsurance;
+    @NotNull(message = "Monthly fire insurance percentage is required")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Monthly fire insurance percentage must be positive")
+    @JsonProperty("monthly_fire_insurance_amount_percentage")
+    private BigDecimal monthlyFireInsuranceAmountPercentage;
 
-    @NotNull(message = "Administration fee is required")
+    @NotNull(message = "Administration fee percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Administration fee must be positive")
-    @JsonProperty("administration_fee")
-    private Double administrationFee;
+    @JsonProperty("administration_fee_percentage")
+    private Double administrationFeePercentage;
 
     @NotEmpty(message = "Status is required")
     private String status;

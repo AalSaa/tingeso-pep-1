@@ -63,10 +63,10 @@ public class LoanService {
                 .propertyValue(loanDTO.getPropertyValue())
                 .amount(loanDTO.getAmount())
                 .termInYears(loanDTO.getTermInYears())
-                .annualInterestRate(loanDTO.getAnnualInterestRate())
-                .monthlyLifeInsurance(loanDTO.getMonthlyLifeInsurance())
-                .monthlyFireInsurance(loanDTO.getMonthlyFireInsurance())
-                .administrationFee(loanDTO.getAdministrationFee())
+                .annualInterestRatePercentage(loanDTO.getAnnualInterestRatePercentage())
+                .monthlyLifeInsurancePercentage(loanDTO.getMonthlyLifeInsurancePercentage())
+                .monthlyFireInsuranceAmountPercentage(loanDTO.getMonthlyFireInsuranceAmountPercentage())
+                .administrationFeePercentage(loanDTO.getAdministrationFeePercentage())
                 .status(loanDTO.getStatus())
                 .monthlyCost(monthlyCost)
                 .loanType(loanType)
@@ -94,12 +94,12 @@ public class LoanService {
                 .propertyValue(loanDTO.getPropertyValue())
                 .amount(loanDTO.getAmount())
                 .termInYears(loanDTO.getTermInYears())
-                .annualInterestRate(loanDTO.getAnnualInterestRate())
-                .monthlyLifeInsurance(loanDTO.getMonthlyLifeInsurance())
-                .monthlyFireInsurance(loanDTO.getMonthlyFireInsurance())
-                .administrationFee(loanDTO.getAdministrationFee())
-                .status(loanDTO.getStatus())
+                .annualInterestRatePercentage(loanDTO.getAnnualInterestRatePercentage())
+                .monthlyLifeInsurancePercentage(loanDTO.getMonthlyLifeInsurancePercentage())
+                .monthlyFireInsuranceAmountPercentage(loanDTO.getMonthlyFireInsuranceAmountPercentage())
+                .administrationFeePercentage(loanDTO.getAdministrationFeePercentage())
                 .monthlyCost(monthlyCost)
+                .status(loanDTO.getStatus())
                 .loanType(loan.getLoanType())
                 .user(loan.getUser())
                 .build();
@@ -116,7 +116,7 @@ public class LoanService {
 
     public BigDecimal getMonthlyCost(LoanDTO loanDTO) {
         int termInMonths = loanDTO.getTermInYears() * 12;
-        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRate())
+        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRatePercentage())
                 .divide(BigDecimal.valueOf(12))
                 .divide(BigDecimal.valueOf(100));
 
@@ -131,7 +131,7 @@ public class LoanService {
 
     public BigDecimal getMonthlyCost(LoanUpdateDTO loanDTO) {
         int termInMonths = loanDTO.getTermInYears() * 12;
-        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRate())
+        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRatePercentage())
                 .divide(BigDecimal.valueOf(12))
                 .divide(BigDecimal.valueOf(100));
 

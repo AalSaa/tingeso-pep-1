@@ -35,6 +35,10 @@ export function LoanTable() {
         setLocation(`/loan/${loanId}/evaluation/edit`);
     }
 
+    const handleRedirectToAddLoanConditionsClick = (loanId) => {
+        setLocation(`/loan/${loanId}/conditions`);
+    }
+
     const handleGenerateEvaluationClick = async (loan) => {
         try {
             const response = await postEvaluationResult(loan.id);
@@ -67,6 +71,26 @@ export function LoanTable() {
     const handleChangeStatusToPendingDocumentationClick = async (loan) => {
         try {
             loan.status = 'Pendiente de Documentación';
+            await putLoan(loan.id, loan);
+            fetchLoans();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleChangeStatusToApprovedClick = async (loan) => {
+        try {
+            loan.status = 'Aprobada';
+            await putLoan(loan.id, loan);
+            fetchLoans();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const handleChangeStatusToCanceledClick = async (loan) => {
+        try {
+            loan.status = 'Cancelada por el Cliente';
             await putLoan(loan.id, loan);
             fetchLoans();
         } catch (error) {
@@ -122,6 +146,24 @@ export function LoanTable() {
                         <button onClick={(e) => handleGenerateEvaluationClick(loan)}
                         className="bg-lime-500 text-white flex justify-center flex-1 rounded-lg p-2">
                             <p>Generar evaluación</p>
+                        </button>
+                    ) : null}
+                    {(loan.status == "Pre-Aprobada") ? (
+                        <button onClick={(e) => handleRedirectToAddLoanConditionsClick(loan.id)}
+                        className="bg-cyan-500 text-white flex justify-center flex-1 rounded-lg p-2">
+                            <p>Agregar condiciones</p>
+                        </button>
+                    ) : null}
+                    {(loan.status == "En Aprobación Final") ? (
+                        <button onClick={(e) => handleChangeStatusToApprovedClick(loan)}
+                        className="bg-lime-500 text-white flex justify-center rounded-lg p-2">
+                            <p>Aceptar</p>
+                        </button>
+                    ) : null}
+                    {(loan.status == "En Aprobación Final") ? (
+                        <button onClick={(e) => handleChangeStatusToCanceledClick(loan)}
+                        className="bg-red-500 text-white flex justify-center rounded-lg p-2">
+                            <p>Cancelar</p>
                         </button>
                     ) : null}
                 </td>
