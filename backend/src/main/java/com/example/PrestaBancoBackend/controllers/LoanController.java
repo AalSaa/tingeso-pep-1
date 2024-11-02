@@ -35,6 +35,13 @@ public class LoanController {
         return new ResponseEntity<>(loanService.getAllLoansByStatusNot(status), HttpStatus.OK);
     }
 
+    @GetMapping("/status/not/{status}/user/{userId}")
+    public ResponseEntity<List<LoanEntity>> getLoansByUserIdAndStatusNot(
+            @PathVariable Long userId, @PathVariable String status
+    ){
+        return new ResponseEntity<>(loanService.getAllLoansByUserIdAndStatusNot(userId, status), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LoanEntity> getLoan(@PathVariable Long id){
         return new ResponseEntity<>(loanService.getLoanById(id), HttpStatus.OK);

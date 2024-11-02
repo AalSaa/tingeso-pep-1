@@ -29,6 +29,15 @@ export const getLoansByStatusNot = async (status) => {
     }
 }
 
+export const getLoansByUserIdAndStatusNot = async (userId, status) => {
+    try {
+        const response = await axios.get(`${API_URL}/status/not/${status}/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export const getLoanById = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/${id}`);

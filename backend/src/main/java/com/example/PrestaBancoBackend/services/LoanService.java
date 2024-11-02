@@ -2,6 +2,7 @@ package com.example.PrestaBancoBackend.services;
 
 import com.example.PrestaBancoBackend.dtos.LoanDTO;
 import com.example.PrestaBancoBackend.dtos.LoanUpdateDTO;
+import com.example.PrestaBancoBackend.entities.DocumentEntity;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
@@ -36,6 +37,10 @@ public class LoanService {
 
     public List<LoanEntity> getAllLoansByStatusNot(String status) {
         return loanRepository.findAllByStatusNot(status);
+    }
+
+    public List<LoanEntity> getAllLoansByUserIdAndStatusNot(Long userId, String status) {
+        return loanRepository.findAllByUserIdAndStatusNot(userId, status);
     }
 
     public LoanEntity getLoanById(Long id) {

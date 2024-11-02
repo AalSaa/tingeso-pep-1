@@ -1,18 +1,7 @@
 import { getUserByRut } from "../services/UserService";
 
-export function UserSearchForm({ user, setUser }) {
-    const submitUserForm = async (event) => {
-        event.preventDefault();
-        try {
-            const fetchedUser = await getUserByRut(user.rut);
-            if (fetchedUser) {
-                setUser(fetchedUser);
-                console.log(fetchedUser);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
+export function UserSearchForm({ user, setUser, submitForm }) {
+    
 
     return (
         <form action="" className="bg-slate-50 space-y-4 w-96 rounded-2xl p-4">
@@ -28,7 +17,7 @@ export function UserSearchForm({ user, setUser }) {
                 className="border w-full rounded-lg p-2"
                 />
             </div>
-            <button onClick={submitUserForm}
+            <button onClick={submitForm}
             className="bg-cyan-500 text-white w-full rounded-lg p-2">
                 Buscar usuario
             </button>

@@ -3,6 +3,7 @@ import { Route, Switch } from 'wouter';
 import { Header } from "./layouts/Header"
 import { SideBar } from "./layouts/SideBar"
 import { AddUserPage } from "./pages/AddUserPage"
+import { HomePage } from "./pages/HomePage"
 import { UsersPage } from "./pages/UsersPage"
 import { EditUserPage } from "./pages/EditUserPage";
 import { LoansPage } from "./pages/LoansPage";
@@ -30,6 +31,7 @@ function App() {
         <SideBar showSideBar={showSideBar} handleShowSideBar={handleShowSideBar}/>
         <Switch>
           <div className="h-[calc(100vh-4rem)] mx-64">
+            <Route path="/" component={HomePage} />
             <Route path="/edituser/:id" component={EditUserPage} />
             <Route path="/adduser" component={AddUserPage} />
             <Route path="/users" component={UsersPage} />

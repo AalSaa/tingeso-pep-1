@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 
 import { UserSearchForm } from '../features/users/components/UserSearchForm';
 import { LoanTypeSelectorForm } from '../features/loans/components/LoanTypeSelectorForm';
+import { getUserByRut } from '../features/users/services/UserService';
 import { LoanForm } from '../features/loans/components/LoanForm';
 import { postLoan } from '../features/loans/services/LoanService';
 
@@ -41,7 +42,20 @@ export function ApplyLoanPage() {
 
     const [, setLocation] = useLocation();
 
-    const submitForm = async (event) => {
+    const submitUserForm = async (event) => {
+        event.preventDefault();
+        try {
+            const fetchedUser = await getUserByRut(user.rut);
+            if (fetchedUser) {
+                setUser(fetchedUser);
+                console.log(fetchedUser);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const submitLoanForm = async (event) => {
         event.preventDefault();
         try {
             const updatedLoan = { ...loan, user_id: user.id, loan_type_id: loanType.id };
@@ -70,7 +84,7 @@ export function ApplyLoanPage() {
                 </div>
                 <div className="flex">
                     <div className="flex flex-col h-full">
-                        <UserSearchForm user={user} setUser={setUser} />
+                        <UserSearchForm user={user} setUser={setUser} submitForm={submitUserForm} />
                         <LoanTypeSelectorForm loanType={loanType} setLoanType={setLoanType} />
                         <div className='px-6'>
                             {(user.id || loanType.id) ? (
@@ -96,7 +110,7 @@ export function ApplyLoanPage() {
                         loanType={loanType}
                         loan={loan} 
                         setLoan={setLoan} 
-                        submitForm={submitForm} 
+                        submitForm={submitLoanForm} 
                         isSimulation={false}
                     />
                 </div>
