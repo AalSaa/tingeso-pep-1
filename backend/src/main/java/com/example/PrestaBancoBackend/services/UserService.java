@@ -4,6 +4,7 @@ import com.example.PrestaBancoBackend.dtos.UserDTO;
 import com.example.PrestaBancoBackend.entities.UserEntity;
 import com.example.PrestaBancoBackend.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class UserService {
         return user.get();
     }
 
-    public UserEntity createUser(UserDTO userDTO) {
+    public UserEntity createUser(@Valid UserDTO userDTO) {
         if(userRepository.existsByRut(userDTO.getRut())) {
             throw new IllegalStateException("The rut is already used");
         }
@@ -54,7 +55,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserEntity updateUser(Long id, UserDTO userDTO) {
+    public UserEntity updateUser(@Valid Long id, UserDTO userDTO) {
         Optional<UserEntity> userOptional = userRepository.findById(id);
         if(userOptional.isEmpty()) {
             throw new EntityNotFoundException("User not found");
