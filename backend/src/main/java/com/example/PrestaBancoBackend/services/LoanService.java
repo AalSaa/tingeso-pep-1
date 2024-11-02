@@ -30,6 +30,14 @@ public class LoanService {
         return loanRepository.findAll();
     }
 
+    public List<LoanEntity> getAllLoansByStatus(String status) {
+        return loanRepository.findAllByStatus(status);
+    }
+
+    public List<LoanEntity> getAllLoansByStatusNot(String status) {
+        return loanRepository.findAllByStatusNot(status);
+    }
+
     public LoanEntity getLoanById(Long id) {
         Optional<LoanEntity> loan = loanRepository.findById(id);
 
@@ -204,7 +212,12 @@ public class LoanService {
         List<LoanEntity> loansOfUser = loanRepository.findAllByUser(user);
 
         for (LoanEntity loan : loansOfUser) {
-            if (!loan.getStatus().equals("Closed")) {
+            if (!(
+                    loan.getStatus().equals("Aprobada") ||
+                    loan.getStatus().equals("Cancelada") ||
+                    loan.getStatus().equals("Requiere revisión adicional") ||
+                    loan.getStatus().equals("Simulación")
+            )) {
                 throw new IllegalStateException("The user already has a loan in process");
             }
         }

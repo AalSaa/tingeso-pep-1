@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import { getDocumentsByLoanId } from "../../documents/services/DocumentService";
 
-export function LoanForm({ user, loanType, loan, setLoan, submitForm }) {
+export function LoanForm({ user, loanType, loan, setLoan, submitForm, isSimulation }) {
     const [documents, setDocuments] = useState([]);
 
     
@@ -62,7 +62,7 @@ export function LoanForm({ user, loanType, loan, setLoan, submitForm }) {
                     </div>
                 </div>
                 <button onClick={submitForm} className="bg-lime-500 text-white w-full rounded-lg p-2">
-                    Enviar solicitud
+                    {isSimulation ? 'Simular préstamo' : 'Solicitar préstamo'}
                 </button>
             </form>
         </div>

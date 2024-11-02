@@ -10,9 +10,8 @@ export function SideBar({ showSideBar, handleShowSideBar }) {
             className="bg-cyan-800 text-white text-xl flex flex-col items-start gap-4 w-80 h-full p-4">
                <Link>Inicio</Link>
                <Link href="/users">Clientes</Link>
-               <Link>Simulación</Link>
+               <Link href="/simulations">Simulación</Link>
                <Link href="/loans">Préstamo</Link>
-               <Link>Evaluación</Link>
             </section>
         </aside>
     )

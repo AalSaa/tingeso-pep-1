@@ -6,7 +6,7 @@ import { LoanTypeSelectorForm } from '../features/loans/components/LoanTypeSelec
 import { LoanForm } from '../features/loans/components/LoanForm';
 import { postLoan } from '../features/loans/services/LoanService';
 
-export function ApplyLoanPage() {
+export function SimulateLoanPage() {
     const [user, setUser] = useState({
         id: "",
         rut: "",
@@ -34,7 +34,7 @@ export function ApplyLoanPage() {
         monthly_life_insurance_percentage: "0",
         monthly_fire_insurance_amount_percentage: "0",
         administration_fee_percentage: "0",
-        status: "Pendiente de Documentación",
+        status: "Simulación",
         user_id: "",
         loan_type_id: "",
     })
@@ -66,7 +66,7 @@ export function ApplyLoanPage() {
                         <path fillRule="evenodd" d="M9.53 2.47a.75.75 0 0 1 0 1.06L4.81 8.25H15a6.75 6.75 0 0 1 0 13.5h-3a.75.75 0 0 1 0-1.5h3a5.25 5.25 0 1 0 0-10.5H4.81l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
                         </svg>
                     </button>
-                    <h1 className="text-2xl text-center">Solicitud de prestamo</h1>
+                    <h1 className="text-2xl text-center">Simulación de prestamo</h1>
                 </div>
                 <div className="flex">
                     <div className="flex flex-col h-full">
@@ -97,7 +97,7 @@ export function ApplyLoanPage() {
                         loan={loan} 
                         setLoan={setLoan} 
                         submitForm={submitForm} 
-                        isSimulation={false}
+                        isSimulation={true}
                     />
                 </div>
             </div>

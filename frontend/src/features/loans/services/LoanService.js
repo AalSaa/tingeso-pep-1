@@ -11,6 +11,24 @@ export const getLoans = async () => {
     }
 }
 
+export const getLoansByStatus = async (status) => {
+    try {
+        const response = await axios.get(`${API_URL}/status/${status}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const getLoansByStatusNot = async (status) => {
+    try {
+        const response = await axios.get(`${API_URL}/status/not/${status}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export const getLoanById = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/${id}`);
