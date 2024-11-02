@@ -42,7 +42,7 @@ public class LoanDTO {
     @NotNull(message = "Monthly fire insurance percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Monthly fire insurance percentage must be positive")
     @JsonProperty("monthly_fire_insurance_amount_percentage")
-    private BigDecimal monthlyFireInsuranceAmountPercentage;
+    private Double monthlyFireInsuranceAmountPercentage;
 
     @NotNull(message = "Administration fee percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Administration fee must be positive")

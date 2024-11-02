@@ -104,7 +104,17 @@ export function LoanTable() {
             <tr className="odd:bg-white even:bg-slate-50">
                 <td className="text-start p-4">{loan.user.rut}</td>
                 <td className="text-start p-4">{loan.loanType.name}</td>
-                <td className="text-start p-4">{loan.amount}</td>
+                <td className="text-start p-4">${loan.amount}</td>
+                {(loan.status == 'En Aprobación Final' || loan.status == 'Aprobada' || loan.status == 'Cancelada') ? (
+                    <td className="text-start p-4">${loan.monthly_cost}</td>
+                ): (
+                    <td className="text-start p-4">-</td>
+                )}
+                {(loan.status == 'En Aprobación Final' || loan.status == 'Aprobada' || loan.status == 'Cancelada') ? (
+                    <td className="text-start p-4">${loan.total_cost}</td>
+                ): (
+                    <td className="text-start p-4">-</td>
+                )}
                 <td className="text-start p-4">{loan.status}</td>
                 <td className="flex items-center p-2 space-x-2">
                     <button onClick={(e) => handleRedirectToDocumentsClick(loan.id)}
@@ -150,19 +160,19 @@ export function LoanTable() {
                     ) : null}
                     {(loan.status == "Pre-Aprobada") ? (
                         <button onClick={(e) => handleRedirectToAddLoanConditionsClick(loan.id)}
-                        className="bg-cyan-500 text-white flex justify-center flex-1 rounded-lg p-2">
+                        className="bg-lime-500 text-white flex justify-center flex-1 rounded-lg p-2">
                             <p>Agregar condiciones</p>
                         </button>
                     ) : null}
                     {(loan.status == "En Aprobación Final") ? (
                         <button onClick={(e) => handleChangeStatusToApprovedClick(loan)}
-                        className="bg-lime-500 text-white flex justify-center rounded-lg p-2">
+                        className="bg-lime-500 text-white flex justify-center flex-1 rounded-lg p-2">
                             <p>Aceptar</p>
                         </button>
                     ) : null}
                     {(loan.status == "En Aprobación Final") ? (
                         <button onClick={(e) => handleChangeStatusToCanceledClick(loan)}
-                        className="bg-red-500 text-white flex justify-center rounded-lg p-2">
+                        className="bg-red-500 text-white flex justify-center flex-1 rounded-lg p-2">
                             <p>Cancelar</p>
                         </button>
                     ) : null}
@@ -179,6 +189,8 @@ export function LoanTable() {
                         <th className="text-start p-4">Rut del solicitante</th>
                         <th className="text-start p-4">Tipo</th>
                         <th className="text-start p-4">Monto</th>
+                        <th className="text-start p-4">Costo mensual</th>
+                        <th className="text-start p-4">Costo total</th>
                         <th className="text-start p-4">Estado</th>
                         <th className="text-start w-96 p-4">Acciones</th>
                     </tr>

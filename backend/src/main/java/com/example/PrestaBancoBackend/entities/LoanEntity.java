@@ -55,7 +55,7 @@ public class LoanEntity {
     @NotNull(message = "Monthly fire insurance percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Monthly fire insurance percentage must be positive")
     @JsonProperty("monthly_fire_insurance_amount_percentage")
-    private BigDecimal monthlyFireInsuranceAmountPercentage;
+    private Double monthlyFireInsuranceAmountPercentage;
 
     @NotNull(message = "Administration fee percentage is required")
     @DecimalMin(value = "0.0", inclusive = true, message = "Administration fee must be positive")
@@ -65,8 +65,14 @@ public class LoanEntity {
     @NotEmpty(message = "Status is required")
     private String status;
 
+    @JsonProperty("monthly_fee")
+    private BigDecimal monthlyFee;
+
     @JsonProperty("monthly_cost")
     private BigDecimal monthlyCost;
+
+    @JsonProperty("total_cost")
+    private BigDecimal totalCost;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

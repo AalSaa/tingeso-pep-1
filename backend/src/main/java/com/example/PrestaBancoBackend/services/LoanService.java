@@ -57,7 +57,25 @@ public class LoanService {
 
         verifyLoanTypeRestrictions(loanDTO, loanType);
 
-        BigDecimal monthlyCost = getMonthlyCost(loanDTO);
+        BigDecimal monthlyFee = getMonthlyFee(
+                loanDTO.getTermInYears(),
+                loanDTO.getAnnualInterestRatePercentage(),
+                loanDTO.getAmount()
+        );
+
+        BigDecimal monthlyCost = getMonthlyCost(
+                loanDTO.getAmount(),
+                monthlyFee,
+                loanDTO.getMonthlyLifeInsurancePercentage(),
+                loanDTO.getMonthlyFireInsuranceAmountPercentage()
+        );
+
+        BigDecimal totalCost = getTotalCost(
+                monthlyCost,
+                loanDTO.getTermInYears(),
+                loanDTO.getAmount(),
+                loanDTO.getAdministrationFeePercentage()
+        );
 
         LoanEntity loan = LoanEntity.builder()
                 .propertyValue(loanDTO.getPropertyValue())
@@ -68,7 +86,9 @@ public class LoanService {
                 .monthlyFireInsuranceAmountPercentage(loanDTO.getMonthlyFireInsuranceAmountPercentage())
                 .administrationFeePercentage(loanDTO.getAdministrationFeePercentage())
                 .status(loanDTO.getStatus())
+                .monthlyFee(monthlyFee)
                 .monthlyCost(monthlyCost)
+                .totalCost(totalCost)
                 .loanType(loanType)
                 .user(user)
                 .build();
@@ -87,7 +107,25 @@ public class LoanService {
 
         verifyLoanTypeRestrictions(loanDTO, loan.getLoanType());
 
-        BigDecimal monthlyCost = getMonthlyCost(loanDTO);
+        BigDecimal monthlyFee = getMonthlyFee(
+                loanDTO.getTermInYears(),
+                loanDTO.getAnnualInterestRatePercentage(),
+                loanDTO.getAmount()
+        );
+
+        BigDecimal monthlyCost = getMonthlyCost(
+                loanDTO.getAmount(),
+                monthlyFee,
+                loanDTO.getMonthlyLifeInsurancePercentage(),
+                loanDTO.getMonthlyFireInsuranceAmountPercentage()
+        );
+
+        BigDecimal totalCost = getTotalCost(
+                monthlyCost,
+                loanDTO.getTermInYears(),
+                loanDTO.getAmount(),
+                loanDTO.getAdministrationFeePercentage()
+        );
 
         LoanEntity updatedLoan = LoanEntity.builder()
                 .id(loan.getId())
@@ -98,7 +136,9 @@ public class LoanService {
                 .monthlyLifeInsurancePercentage(loanDTO.getMonthlyLifeInsurancePercentage())
                 .monthlyFireInsuranceAmountPercentage(loanDTO.getMonthlyFireInsuranceAmountPercentage())
                 .administrationFeePercentage(loanDTO.getAdministrationFeePercentage())
+                .monthlyFee(monthlyFee)
                 .monthlyCost(monthlyCost)
+                .totalCost(totalCost)
                 .status(loanDTO.getStatus())
                 .loanType(loan.getLoanType())
                 .user(loan.getUser())
@@ -114,13 +154,13 @@ public class LoanService {
         loanRepository.deleteById(id);
     }
 
-    public BigDecimal getMonthlyCost(LoanDTO loanDTO) {
-        int termInMonths = loanDTO.getTermInYears() * 12;
-        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRatePercentage())
+    public BigDecimal getMonthlyFee(Integer termInYears, Double annualInterestRatePercentage, BigDecimal amount) {
+        int termInMonths = termInYears * 12;
+        BigDecimal monthlyInterestRate = BigDecimal.valueOf(annualInterestRatePercentage)
                 .divide(BigDecimal.valueOf(12))
                 .divide(BigDecimal.valueOf(100));
 
-        BigDecimal numerator = loanDTO.getAmount()
+        BigDecimal numerator = amount
                 .multiply(monthlyInterestRate)
                 .multiply(monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths));
         BigDecimal denominator = monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths)
@@ -129,19 +169,31 @@ public class LoanService {
         return numerator.divide(denominator, 0, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal getMonthlyCost(LoanUpdateDTO loanDTO) {
-        int termInMonths = loanDTO.getTermInYears() * 12;
-        BigDecimal monthlyInterestRate = BigDecimal.valueOf(loanDTO.getAnnualInterestRatePercentage())
-                .divide(BigDecimal.valueOf(12))
-                .divide(BigDecimal.valueOf(100));
+    public BigDecimal getMonthlyCost(
+            BigDecimal amount,
+            BigDecimal monthlyFee,
+            Double monthlyLifeInsurancePercentage,
+            Double monthlyFireInsurancePercentage
+    ) {
+        BigDecimal monthlyLifeInsuranceAmount =
+                amount.multiply(BigDecimal.valueOf(monthlyLifeInsurancePercentage).divide(BigDecimal.valueOf(100)));
+        BigDecimal monthlyFireInsuranceAmount =
+                amount.multiply((BigDecimal.valueOf(monthlyFireInsurancePercentage).divide(BigDecimal.valueOf(100))));
 
-        BigDecimal numerator = loanDTO.getAmount()
-                .multiply(monthlyInterestRate)
-                .multiply(monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths));
-        BigDecimal denominator = monthlyInterestRate.add(BigDecimal.ONE).pow(termInMonths)
-                .subtract(BigDecimal.ONE);
+        return monthlyFee.add(monthlyLifeInsuranceAmount).add(monthlyFireInsuranceAmount);
+    }
 
-        return numerator.divide(denominator, 0, RoundingMode.HALF_UP);
+    public BigDecimal getTotalCost(
+            BigDecimal monthlyCost,
+            Integer termInYears,
+            BigDecimal amount,
+            Double administrationFeePercentage
+    ) {
+        BigDecimal administrationFeeAmount =
+                amount.multiply(BigDecimal.valueOf(administrationFeePercentage).divide(BigDecimal.valueOf(100)));
+
+        return monthlyCost.multiply(BigDecimal.valueOf(termInYears).multiply(BigDecimal.valueOf(12)))
+                .add(administrationFeeAmount);
     }
 
     public void verifyUserRestrictions(UserEntity user) {
