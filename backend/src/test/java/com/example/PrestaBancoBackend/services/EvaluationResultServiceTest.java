@@ -408,4 +408,407 @@ public class EvaluationResultServiceTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Evaluation info not found");
     }
+
+    // ###################################################
+    @Test
+    void whenGetEvaluationResult_Rejected() {
+        // Given
+        EvaluationResultEntity evaluationResult = EvaluationResultEntity.builder()
+                .isIncomeExpenseRatioValid(false) // Esta condición es inválida
+                .isCreditHistoryValid(true)
+                .isEmploymentStabilityValid(true)
+                .isDebtIncomeRatioValid(true)
+                .isAgeAtLoanEndValid(true)
+                .isMinimumBalanceRequiredValid(true)
+                .isConsistentSavingsHistoryValid(true)
+                .isPeriodicDepositsValid(true)
+                .isBalanceYearsRatioValid(true)
+                .isRecentWithdrawalsValid(true)
+                .build();
+
+        // When
+        String result = evaluationResultService.getEvaluationResult(evaluationResult);
+
+        // Then
+        assertThat(result).isEqualTo("Rejected");
+    }
+
+    @Test
+    void whenGetEvaluationResult_Approved() {
+        // Given
+        EvaluationResultEntity evaluationResult = EvaluationResultEntity.builder()
+                .isIncomeExpenseRatioValid(true)
+                .isCreditHistoryValid(true)
+                .isEmploymentStabilityValid(true)
+                .isDebtIncomeRatioValid(true)
+                .isAgeAtLoanEndValid(true)
+                .isMinimumBalanceRequiredValid(true)
+                .isConsistentSavingsHistoryValid(true)
+                .isPeriodicDepositsValid(true)
+                .isBalanceYearsRatioValid(true)
+                .isRecentWithdrawalsValid(true)
+                .build();
+
+        // When
+        String result = evaluationResultService.getEvaluationResult(evaluationResult);
+
+        // Then
+        assertThat(result).isEqualTo("Approved");
+    }
+
+    @Test
+    void whenGetEvaluationResult_RequiresAdditionalReview() {
+        // Given
+        EvaluationResultEntity evaluationResult = EvaluationResultEntity.builder()
+                .isIncomeExpenseRatioValid(true)
+                .isCreditHistoryValid(true)
+                .isEmploymentStabilityValid(true)
+                .isDebtIncomeRatioValid(true)
+                .isAgeAtLoanEndValid(true)
+                .isMinimumBalanceRequiredValid(true)
+                .isConsistentSavingsHistoryValid(false)
+                .isPeriodicDepositsValid(false)
+                .isBalanceYearsRatioValid(true)
+                .isRecentWithdrawalsValid(true)
+                .build();
+
+        // When
+        String result = evaluationResultService.getEvaluationResult(evaluationResult);
+
+        // Then
+        assertThat(result).isEqualTo("Requires a additional review");
+    }
+
+    @Test
+    void whenGetEvaluationResult_Rejected_InsufficientSavingsCapacity() {
+        // Given
+        EvaluationResultEntity evaluationResult = EvaluationResultEntity.builder()
+                .isIncomeExpenseRatioValid(true)
+                .isCreditHistoryValid(true)
+                .isEmploymentStabilityValid(true)
+                .isDebtIncomeRatioValid(true)
+                .isAgeAtLoanEndValid(true)
+                .isMinimumBalanceRequiredValid(false)
+                .isConsistentSavingsHistoryValid(false)
+                .isPeriodicDepositsValid(false)
+                .isBalanceYearsRatioValid(false)
+                .isRecentWithdrawalsValid(false)
+                .build();
+
+        // When
+        String result = evaluationResultService.getEvaluationResult(evaluationResult);
+
+        // Then
+        assertThat(result).isEqualTo("Rejected");
+    }
+
+    @Test
+    void whenGetEvaluationResult_RequiresAdditionalReview_AllRejected() {
+        // Given
+        EvaluationResultEntity evaluationResult = EvaluationResultEntity.builder()
+                .isIncomeExpenseRatioValid(false)
+                .isCreditHistoryValid(false)
+                .isEmploymentStabilityValid(false)
+                .isDebtIncomeRatioValid(false)
+                .isAgeAtLoanEndValid(false)
+                .isMinimumBalanceRequiredValid(false)
+                .isConsistentSavingsHistoryValid(false)
+                .isPeriodicDepositsValid(false)
+                .isBalanceYearsRatioValid(false)
+                .isRecentWithdrawalsValid(false)
+                .build();
+
+        // When
+        String result = evaluationResultService.getEvaluationResult(evaluationResult);
+
+        // Then
+        assertThat(result).isEqualTo("Rejected");
+    }
+
+    @Test
+    void whenAnalyzeIncomeExpenseRatio_ValidRatio() {
+        // Given
+        BigDecimal monthlyFee = BigDecimal.valueOf(600000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(4000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeIncomeExpenseRatio(monthlyFee, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeIncomeExpenseRatio_InvalidRatio() {
+        // Given
+        BigDecimal monthlyFee = BigDecimal.valueOf(600000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(1000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeIncomeExpenseRatio(monthlyFee, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeEmploymentStability_DependentWithSufficientSeniority() {
+        // Given
+        String employmentType = "Dependent";
+        Integer employmentSeniority = 2;
+
+        // When
+        Boolean result = evaluationResultService.analyzeEmploymentStability(employmentType, employmentSeniority);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeEmploymentStability_DependentButNotWithSufficientSeniority() {
+        // Given
+        String employmentType = "Dependent";
+        Integer employmentSeniority = 0;
+
+        // When
+        Boolean result = evaluationResultService.analyzeEmploymentStability(employmentType, employmentSeniority);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeEmploymentStability_IndependentWithSufficientSeniority() {
+        // Given
+        String employmentType = "Independent";
+        Integer employmentSeniority = 2;
+
+        // When
+        Boolean result = evaluationResultService.analyzeEmploymentStability(employmentType, employmentSeniority);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeEmploymentStability_IndependentButNotWithSufficientSeniority() {
+        // Given
+        String employmentType = "Independent";
+        Integer employmentSeniority = 0;
+
+        // When
+        Boolean result = evaluationResultService.analyzeEmploymentStability(employmentType, employmentSeniority);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeDebtIncomeRatio_ValidScenario() {
+        // Given
+        BigDecimal monthlyDebt = BigDecimal.valueOf(300000);
+        BigDecimal monthlyFee = BigDecimal.valueOf(600000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(4000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeDebtIncomeRatio(monthlyDebt, monthlyFee, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeDebtIncomeRatio_InvalidScenario() {
+        // Given
+        BigDecimal monthlyDebt = BigDecimal.valueOf(300000);
+        BigDecimal monthlyFee = BigDecimal.valueOf(600000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(1000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeDebtIncomeRatio(monthlyDebt, monthlyFee, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeAgeAtLoanEnd_ValidAge() {
+        // Given
+        Date birthDate = Date.valueOf("1990-01-01");
+
+        // When
+        Boolean result = evaluationResultService.analyzeAgeAtLoanEnd(birthDate);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeAgeAtLoanEnd_InvalidAge() {
+        // Given
+        Date birthDate = Date.valueOf("1945-01-01");
+
+        // When
+        Boolean result = evaluationResultService.analyzeAgeAtLoanEnd(birthDate);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeMinimumBalanceRequired_SufficientBalance() {
+        // Given
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(20000000);
+        BigDecimal amount = BigDecimal.valueOf(100000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeMinimumBalanceRequired(savingsAccountBalance, amount);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeMinimumBalanceRequired_InsufficientBalance() {
+        // Given
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(5000000);
+        BigDecimal amount = BigDecimal.valueOf(100000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeMinimumBalanceRequired(savingsAccountBalance, amount);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzePeriodicDeposits_SufficientDeposits() {
+        // Given
+        Boolean hasPeriodicDeposits = true;
+        BigDecimal sumOfDeposits = BigDecimal.valueOf(1500000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(2000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzePeriodicDeposits(hasPeriodicDeposits, sumOfDeposits, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzePeriodicDeposits_DontHavePeriodicDeposits() {
+        // Given
+        Boolean hasPeriodicDeposits = false;
+        BigDecimal sumOfDeposits = BigDecimal.valueOf(1500000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(2000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzePeriodicDeposits(hasPeriodicDeposits, sumOfDeposits, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzePeriodicDeposits_InsufficientDeposits() {
+        // Given
+        Boolean hasPeriodicDeposits = true;
+        BigDecimal sumOfDeposits = BigDecimal.valueOf(500000);
+        BigDecimal monthlyIncome = BigDecimal.valueOf(2000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzePeriodicDeposits(hasPeriodicDeposits, sumOfDeposits, monthlyIncome);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeBalanceYearsRatio_NewAccount_SufficientBalance() {
+        // Given
+        Integer oldSavingsAccount = 1;
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(20000000);
+        BigDecimal amount = BigDecimal.valueOf(100000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzeBalanceYearsRatio(oldSavingsAccount, savingsAccountBalance, amount);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeBalanceYearsRatio_NewAccount_InsufficientBalance() {
+        // Given
+        Integer oldSavingsAccount = 1;
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(10000000);
+        BigDecimal amount = BigDecimal.valueOf(100000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzeBalanceYearsRatio(oldSavingsAccount, savingsAccountBalance, amount);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void whenAnalyzeBalanceYearsRatio_OldAccount_SufficientBalance() {
+        // Given
+        Integer oldSavingsAccount = 2;
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(10000000);
+        BigDecimal amount = BigDecimal.valueOf(100000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzeBalanceYearsRatio(oldSavingsAccount, savingsAccountBalance, amount);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void whenAnalyzeBalanceYearsRatio_OldAccount_InsufficientBalance() {
+        // Given
+        Integer oldSavingsAccount = 2;
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(5000000);
+        BigDecimal amount = BigDecimal.valueOf(100000000);
+
+        // When
+        Boolean result =
+                evaluationResultService.analyzeBalanceYearsRatio(oldSavingsAccount, savingsAccountBalance, amount);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void testAnalyzeRecentWithdrawals_WithinLimit() {
+        // Given
+        BigDecimal maximumWithdrawalInSixMonths = BigDecimal.valueOf(5000);
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(20000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeRecentWithdrawals(maximumWithdrawalInSixMonths, savingsAccountBalance);
+
+        // Then
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void testAnalyzeRecentWithdrawals_ExceedingLimit() {
+        // Given
+        BigDecimal maximumWithdrawalInSixMonths = BigDecimal.valueOf(6000000);
+        BigDecimal savingsAccountBalance = BigDecimal.valueOf(20000000);
+
+        // When
+        Boolean result = evaluationResultService.analyzeRecentWithdrawals(maximumWithdrawalInSixMonths, savingsAccountBalance);
+
+        // Then
+        assertThat(result).isEqualTo(false);
+    }
 }
