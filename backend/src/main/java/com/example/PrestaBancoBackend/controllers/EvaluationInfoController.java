@@ -35,14 +35,14 @@ public class EvaluationInfoController {
 
     @PostMapping
     public ResponseEntity<EvaluationInfoEntity> addEvaluationInfo(
-            @Valid @RequestBody EvaluationInfoDTO evaluationInfoDTO
+            @RequestBody EvaluationInfoDTO evaluationInfoDTO
     ) {
         return new ResponseEntity<>(evaluationInfoService.saveEvaluationInfo(evaluationInfoDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<EvaluationInfoEntity> updateEvaluationInfo(
-            @PathVariable Long id, @Valid @RequestBody EvaluationInfoUpdateDTO evaluationInfoDTO
+            @PathVariable Long id,@RequestBody EvaluationInfoUpdateDTO evaluationInfoDTO
     ) {
         return new ResponseEntity<>(evaluationInfoService.updateEvaluationInfo(id, evaluationInfoDTO), HttpStatus.OK);
     }

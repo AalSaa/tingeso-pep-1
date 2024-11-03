@@ -7,6 +7,7 @@ import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.repositories.EvaluationInfoRepository;
 import com.example.PrestaBancoBackend.repositories.LoanRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class EvaluationInfoService {
         return evaluationInfo.get();
     }
 
-    public EvaluationInfoEntity saveEvaluationInfo(EvaluationInfoDTO evaluationInfoDTO){
+    public EvaluationInfoEntity saveEvaluationInfo(@Valid EvaluationInfoDTO evaluationInfoDTO){
         Optional<LoanEntity> possibleLoan = loanRepository.findById(evaluationInfoDTO.getLoanId());
 
         if(possibleLoan.isEmpty()){
@@ -70,7 +71,7 @@ public class EvaluationInfoService {
         return evaluationInfoRepository.save(evaluationInfoEntity);
     }
 
-    public EvaluationInfoEntity updateEvaluationInfo(Long id, EvaluationInfoUpdateDTO evaluationInfoDTO) {
+    public EvaluationInfoEntity updateEvaluationInfo(Long id, @Valid EvaluationInfoUpdateDTO evaluationInfoDTO) {
         Optional<EvaluationInfoEntity> possibleEvaluationInfo = evaluationInfoRepository.findById(id);
         if (possibleEvaluationInfo.isEmpty()) {
             throw new EntityNotFoundException("Evaluation info not found");

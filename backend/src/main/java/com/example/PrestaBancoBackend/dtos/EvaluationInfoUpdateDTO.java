@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class EvaluationInfoUpdateDTO {
     @NotNull(message = "Monthly income is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Monthly income must be positive")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Monthly income must be greater than or equal to zero")
     @JsonProperty("monthly_income")
     private BigDecimal monthlyIncome;
 
@@ -29,17 +29,17 @@ public class EvaluationInfoUpdateDTO {
     private String employmentType;
 
     @NotNull(message = "Employment seniority is required")
-    @Min(value = 0, message = "Employment seniority must be positive")
+    @Min(value = 0, message = "Employment seniority must be greater than or equal to zero")
     @JsonProperty("employment_seniority")
-    private int employmentSeniority;
+    private Integer employmentSeniority;
 
     @NotNull(message = "Monthly debt is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Monthly debt must be positive")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Monthly debt must be greater than or equal to zero")
     @JsonProperty("monthly_debt")
     private BigDecimal monthlyDebt;
 
     @NotNull(message = "Savings account balance is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Savings account balance must be positive")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Savings account balance must be greater than or equal to zero")
     @JsonProperty("savings_account_balance")
     private BigDecimal savingsAccountBalance;
 
@@ -48,17 +48,17 @@ public class EvaluationInfoUpdateDTO {
     private Boolean hasPeriodicDeposits;
 
     @NotNull(message = "Sum of deposits is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Sum of deposits must be positive")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Sum of deposits must be greater than or equal to zero")
     @JsonProperty("sum_of_deposits")
     private BigDecimal sumOfDeposits;
 
     @NotNull(message = "Old savings account is required")
-    @Min(value = 0, message = "Old savings account must be positive")
+    @Min(value = 0, message = "Old savings account must be greater than or equal to zero")
     @JsonProperty("old_savings_account")
     private Integer oldSavingsAccount;
 
     @NotNull(message = "Maximum withdrawal in six months is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Maximum withdrawal in six months must be positive")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Maximum withdrawal in six months must be greater than or equal to zero")
     @JsonProperty("maximum_withdrawal_in_six_months")
     private BigDecimal maximumWithdrawalInSixMonths;
 }
