@@ -101,6 +101,15 @@ export function EvaluationForm({ evaluationInfo, setEvaluationInfo, submitForm }
                 </div>
                 <div className="flex space-x-2 ml-2">
                     <input 
+                    id="has_consistent_savings_history"
+                    name="has_consistent_savings_history"
+                    checked={evaluationInfo.has_consistent_savings_history}
+                    onChange={(e) => setEvaluationInfo({...evaluationInfo, has_consistent_savings_history: e.target.checked})}
+                    type="checkbox" />
+                    <label htmlFor="" className="block ml-2">¿Tiene historial de ahorros consistente?</label>
+                </div>
+                <div className="flex space-x-2 ml-2">
+                    <input 
                     id="has_periodic_deposits"
                     name="has_periodic_deposits"
                     checked={evaluationInfo.has_periodic_deposits}

@@ -68,7 +68,7 @@ public class EvaluationResultService {
 
         return EvaluationResultEntity.builder()
                 .isIncomeExpenseRatioValid(
-                        analyzeIncomeExpenseRatio(loan.getMonthlyCost(), evaluationInfo.getMonthlyIncome())
+                        analyzeIncomeExpenseRatio(loan.getMonthlyFee(), evaluationInfo.getMonthlyIncome())
                 )
                 .isCreditHistoryValid(
                         analyzeCreditHistory(evaluationInfo.getHavePositiveCreditHistory())
@@ -82,7 +82,7 @@ public class EvaluationResultService {
                 .isDebtIncomeRatioValid(
                         analyzeDebtIncomeRatio(
                                 evaluationInfo.getMonthlyDebt(),
-                                loan.getMonthlyCost(),
+                                loan.getMonthlyFee(),
                                 evaluationInfo.getMonthlyIncome()
                         )
                 )
@@ -93,7 +93,7 @@ public class EvaluationResultService {
                         analyzeMinimumBalanceRequired(evaluationInfo.getSavingsAccountBalance(), loan.getAmount())
                 )
                 .isConsistentSavingsHistoryValid(
-                        analyzeConsistentSavingsHistory(evaluationInfo.getHavePositiveCreditHistory())
+                        analyzeConsistentSavingsHistory(evaluationInfo.getHasConsistentSavingsHistory())
                 )
                 .isPeriodicDepositsValid(
                         analyzePeriodicDeposits(
@@ -117,30 +117,30 @@ public class EvaluationResultService {
                 .build();
     }
 
-    public String getEvaluationResult(EvaluationResultEntity entity) {
+    public String getEvaluationResult(EvaluationResultEntity evaluationResult) {
         int nValidatedSavingsCapacityRules = 0;
 
-        if (entity.getIsMinimumBalanceRequiredValid()) {
+        if (evaluationResult.getIsMinimumBalanceRequiredValid()) {
             nValidatedSavingsCapacityRules++;
         }
-        if (entity.getIsConsistentSavingsHistoryValid()) {
+        if (evaluationResult.getIsConsistentSavingsHistoryValid()) {
             nValidatedSavingsCapacityRules++;
         }
-        if (entity.getIsPeriodicDepositsValid()) {
+        if (evaluationResult.getIsPeriodicDepositsValid()) {
             nValidatedSavingsCapacityRules++;
         }
-        if (entity.getIsBalanceYearsRatioValid()) {
+        if (evaluationResult.getIsBalanceYearsRatioValid()) {
             nValidatedSavingsCapacityRules++;
         }
-        if (entity.getIsRecentWithdrawalsValid()) {
+        if (evaluationResult.getIsRecentWithdrawalsValid()) {
             nValidatedSavingsCapacityRules++;
         }
 
-        if (!entity.getIsIncomeExpenseRatioValid()
-                || !entity.getIsCreditHistoryValid()
-                || !entity.getIsEmploymentStabilityValid()
-                || !entity.getIsDebtIncomeRatioValid()
-                || !entity.getIsAgeAtLoanEndValid()
+        if (!evaluationResult.getIsIncomeExpenseRatioValid()
+                || !evaluationResult.getIsCreditHistoryValid()
+                || !evaluationResult.getIsEmploymentStabilityValid()
+                || !evaluationResult.getIsDebtIncomeRatioValid()
+                || !evaluationResult.getIsAgeAtLoanEndValid()
                 || nValidatedSavingsCapacityRules <= 2
         ) {
             return "Rejected";
@@ -151,8 +151,8 @@ public class EvaluationResultService {
         }
     }
 
-    public Boolean analyzeIncomeExpenseRatio(BigDecimal monthlyCost, BigDecimal monthlyIncome) {
-        BigDecimal incomeExpenseRatio = monthlyCost
+    public Boolean analyzeIncomeExpenseRatio(BigDecimal monthlyFee, BigDecimal monthlyIncome) {
+        BigDecimal incomeExpenseRatio = monthlyFee
                 .multiply(BigDecimal.valueOf(100))
                 .divide(monthlyIncome);
 
@@ -168,8 +168,8 @@ public class EvaluationResultService {
                 || (employmentType.equals("Independent") && employmentSeniority >= 2);
     }
 
-    public Boolean analyzeDebtIncomeRatio(BigDecimal monthlyDebt, BigDecimal monthlyCost, BigDecimal monthlyIncome) {
-        return monthlyDebt.add(monthlyCost)
+    public Boolean analyzeDebtIncomeRatio(BigDecimal monthlyDebt, BigDecimal monthlyFee, BigDecimal monthlyIncome) {
+        return monthlyDebt.add(monthlyFee)
                 .compareTo(monthlyIncome.multiply(BigDecimal.valueOf(0.5))) <= 0;
     }
 
@@ -182,8 +182,8 @@ public class EvaluationResultService {
                 .compareTo(amount.multiply(BigDecimal.valueOf(0.1))) >= 0;
     }
 
-    public Boolean analyzeConsistentSavingsHistory(Boolean HavePositiveCreditHistory) {
-        return HavePositiveCreditHistory;
+    public Boolean analyzeConsistentSavingsHistory(Boolean hasConsistentSavingsHistory) {
+        return hasConsistentSavingsHistory;
     }
 
     public Boolean analyzePeriodicDeposits(Boolean hasPeriodicDeposits, BigDecimal sumOfDeposits, BigDecimal monthlyIncome) {

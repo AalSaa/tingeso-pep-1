@@ -18,6 +18,7 @@ export function EditEvaluationPage() {
         employment_seniority: "",
         monthly_debt: "",
         savings_account_balance: "",
+        has_consistent_savings_history: false,
         has_periodic_deposits: false,
         sum_of_deposits: "",
         old_savings_account: "",

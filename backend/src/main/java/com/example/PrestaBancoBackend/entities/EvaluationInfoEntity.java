@@ -55,6 +55,10 @@ public class EvaluationInfoEntity {
     @JsonProperty("savings_account_balance")
     private BigDecimal savingsAccountBalance;
 
+    @NotNull(message = "Validation of consistent savings history is required")
+    @JsonProperty("has_consistent_savings_history")
+    private Boolean hasConsistentSavingsHistory;
+
     @NotNull(message = "Validation of periodic deposits is required")
     @JsonProperty("has_periodic_deposits")
     private Boolean hasPeriodicDeposits;

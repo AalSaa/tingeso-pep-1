@@ -366,6 +366,7 @@ public class EvaluationInfoServiceTest {
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
                 true,
+                true,
                 BigDecimal.valueOf(1500000),
                 3,
                 BigDecimal.valueOf(50000),
@@ -397,6 +398,7 @@ public class EvaluationInfoServiceTest {
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
                 true,
+                true,
                 BigDecimal.valueOf(1500000),
                 3,
                 BigDecimal.valueOf(50000),
@@ -425,6 +427,7 @@ public class EvaluationInfoServiceTest {
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
                 true,
+                true,
                 BigDecimal.valueOf(1500000),
                 3,
                 BigDecimal.valueOf(50000),
@@ -452,7 +455,8 @@ public class EvaluationInfoServiceTest {
                 null,
                 null,
                 null,
-                true,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -464,7 +468,7 @@ public class EvaluationInfoServiceTest {
 
         // Then
         assertFalse(violations.isEmpty());
-        assertEquals(10, violations.size());
+        assertEquals(12, violations.size());
         for(ConstraintViolation<EvaluationInfoDTO> violation : violations) {
             String propertyPath = violation.getPropertyPath().toString();
             String message = violation.getMessage();
@@ -487,6 +491,9 @@ public class EvaluationInfoServiceTest {
                     break;
                 case "savingsAccountBalance":
                     assertEquals("Savings account balance is required", message);
+                    break;
+                case "hasConsistentSavingsHistory":
+                    assertEquals("Validation of consistent savings history is required", message);
                     break;
                 case "hasPeriodicDeposits":
                     assertEquals("Validation of periodic deposits is required", message);
@@ -526,6 +533,7 @@ public class EvaluationInfoServiceTest {
                 2,
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
+                true,
                 true,
                 BigDecimal.valueOf(1500000),
                 3,
@@ -579,6 +587,7 @@ public class EvaluationInfoServiceTest {
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
                 true,
+                true,
                 BigDecimal.valueOf(1500000),
                 3,
                 BigDecimal.valueOf(50000)
@@ -614,6 +623,7 @@ public class EvaluationInfoServiceTest {
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
                 true,
+                true,
                 BigDecimal.valueOf(1500000),
                 3,
                 BigDecimal.valueOf(50000)
@@ -638,7 +648,8 @@ public class EvaluationInfoServiceTest {
                 null,
                 null,
                 null,
-                true,
+                null,
+                null,
                 null,
                 null,
                 null
@@ -649,7 +660,7 @@ public class EvaluationInfoServiceTest {
 
         // Then
         assertFalse(violations.isEmpty());
-        assertEquals(9, violations.size());
+        assertEquals(11, violations.size());
         for(ConstraintViolation<EvaluationInfoUpdateDTO> violation : violations) {
             String propertyPath = violation.getPropertyPath().toString();
             String message = violation.getMessage();
@@ -672,6 +683,9 @@ public class EvaluationInfoServiceTest {
                     break;
                 case "savingsAccountBalance":
                     assertEquals("Savings account balance is required", message);
+                    break;
+                case "hasConsistentSavingsHistory":
+                    assertEquals("Validation of consistent savings history is required", message);
                     break;
                 case "hasPeriodicDeposits":
                     assertEquals("Validation of periodic deposits is required", message);
@@ -700,6 +714,7 @@ public class EvaluationInfoServiceTest {
                 2,
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(-20000000),
+                true,
                 true,
                 BigDecimal.valueOf(1500000),
                 3,
@@ -751,6 +766,7 @@ public class EvaluationInfoServiceTest {
                 2,
                 BigDecimal.valueOf(300000),
                 BigDecimal.valueOf(20000000),
+                true,
                 true,
                 BigDecimal.valueOf(1500000),
                 3,
