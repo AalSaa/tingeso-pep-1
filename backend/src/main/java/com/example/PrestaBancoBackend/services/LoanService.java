@@ -2,7 +2,6 @@ package com.example.PrestaBancoBackend.services;
 
 import com.example.PrestaBancoBackend.dtos.LoanDTO;
 import com.example.PrestaBancoBackend.dtos.LoanUpdateDTO;
-import com.example.PrestaBancoBackend.entities.DocumentEntity;
 import com.example.PrestaBancoBackend.entities.LoanEntity;
 import com.example.PrestaBancoBackend.entities.LoanTypeEntity;
 import com.example.PrestaBancoBackend.entities.UserEntity;
@@ -10,6 +9,7 @@ import com.example.PrestaBancoBackend.repositories.LoanRepository;
 import com.example.PrestaBancoBackend.repositories.LoanTypeRepository;
 import com.example.PrestaBancoBackend.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +53,7 @@ public class LoanService {
         return loan.get();
     }
 
-    public LoanEntity createLoan(LoanDTO loanDTO) {
+    public LoanEntity createLoan(@Valid LoanDTO loanDTO) {
         Optional<UserEntity> possibleUser = userRepository.findById(loanDTO.getUserId());
         if (possibleUser.isEmpty()) {
             throw new EntityNotFoundException("User not found");
@@ -68,7 +68,12 @@ public class LoanService {
         }
         LoanTypeEntity loanType = possibleLoanType.get();
 
-        verifyLoanTypeRestrictions(loanDTO, loanType);
+        verifyLoanTypeRestrictions(
+                loanDTO.getPropertyValue(),
+                loanDTO.getAmount(),
+                loanDTO.getTermInYears(),
+                loanType
+        );
 
         BigDecimal monthlyFee = getMonthlyFee(
                 loanDTO.getTermInYears(),
@@ -109,7 +114,7 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
-    public LoanEntity updateLoan(Long id, LoanUpdateDTO loanDTO) {
+    public LoanEntity updateLoan(@Valid Long id, LoanUpdateDTO loanDTO) {
         Optional<LoanEntity> possibleLoan = loanRepository.findById(id);
 
         if (possibleLoan.isEmpty()) {
@@ -118,7 +123,12 @@ public class LoanService {
 
         LoanEntity loan = possibleLoan.get();
 
-        verifyLoanTypeRestrictions(loanDTO, loan.getLoanType());
+        verifyLoanTypeRestrictions(
+                loanDTO.getPropertyValue(),
+                loanDTO.getAmount(),
+                loanDTO.getTermInYears(),
+                loan.getLoanType()
+        );
 
         BigDecimal monthlyFee = getMonthlyFee(
                 loanDTO.getTermInYears(),
@@ -228,32 +238,22 @@ public class LoanService {
         }
     }
 
-    public void verifyLoanTypeRestrictions(LoanDTO loanDTO, LoanTypeEntity loanType) {
+    public void verifyLoanTypeRestrictions(
+            BigDecimal propertyValue,
+            BigDecimal amount,
+            Integer termInYears,
+            LoanTypeEntity loanType
+    ) {
         BigDecimal maxPercentage = BigDecimal.valueOf(loanType.getMaxPercentageAmount())
                 .divide(BigDecimal.valueOf(100));
 
-        BigDecimal maxAllowedAmount = loanDTO.getPropertyValue().multiply(maxPercentage);
+        BigDecimal maxAllowedAmount = propertyValue.multiply(maxPercentage);
 
-        if (loanDTO.getAmount().compareTo(maxAllowedAmount) > 0) {
+        if (amount.compareTo(maxAllowedAmount) > 0) {
             throw new IllegalStateException("Amount exceeds max allowed amount");
         }
 
-        if (loanDTO.getTermInYears() > loanType.getMaxTerm()) {
-            throw new IllegalStateException("The term limit exceeded");
-        }
-    }
-
-    public void verifyLoanTypeRestrictions(LoanUpdateDTO loanDTO, LoanTypeEntity loanType) {
-        BigDecimal maxPercentage = BigDecimal.valueOf(loanType.getMaxPercentageAmount())
-                .divide(BigDecimal.valueOf(100));
-
-        BigDecimal maxAllowedAmount = loanDTO.getPropertyValue().multiply(maxPercentage);
-
-        if (loanDTO.getAmount().compareTo(maxAllowedAmount) > 0) {
-            throw new IllegalStateException("Amount exceeds max allowed amount");
-        }
-
-        if (loanDTO.getTermInYears() > loanType.getMaxTerm()) {
+        if (termInYears > loanType.getMaxTerm()) {
             throw new IllegalStateException("The term limit exceeded");
         }
     }
