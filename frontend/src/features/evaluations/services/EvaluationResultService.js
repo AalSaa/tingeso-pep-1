@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8090/api/v1/evaluation_results";
+const API_URL = "http://191.233.252.88:8090/api/v1/evaluation_results";
 
 export const postEvaluationResult = async (loanId) => {
     try {
