@@ -13,7 +13,6 @@ pipeline {
             }
         }
 
-
         stage('Build backend') {
             steps {
                 script {
@@ -30,6 +29,7 @@ pipeline {
                             sh 'docker login -u aalsaa -p $dhpsw'
                         } else {
                             bat 'docker login -u aalsaa -p %dhpsw%'
+                        }
                     }
                 }
 
