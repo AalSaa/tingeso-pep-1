@@ -10,7 +10,7 @@ export function LoanForm({ user, loanType, loan, setLoan, submitForm, isSimulati
     return (
         <div>
             
-            <form action="" className="bg-slate-50 space-y-8 w-96 rounded-2xl p-4">
+            <form onSubmit={submitForm} className="bg-slate-50 space-y-8 w-96 rounded-2xl p-4">
                 <div className="space-y-4">
                     <div>
                         <label htmlFor="" className="block ml-2">Valor de la vivienda</label>
@@ -61,7 +61,7 @@ export function LoanForm({ user, loanType, loan, setLoan, submitForm, isSimulati
                         />
                     </div>
                 </div>
-                <button onClick={submitForm} className="bg-lime-500 text-white w-full rounded-lg p-2">
+                <button type="submit" className="bg-lime-500 text-white w-full rounded-lg p-2">
                     {isSimulation ? 'Simular préstamo' : 'Solicitar préstamo'}
                 </button>
             </form>

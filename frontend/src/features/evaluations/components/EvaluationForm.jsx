@@ -1,6 +1,6 @@
 export function EvaluationForm({ evaluationInfo, setEvaluationInfo, submitForm }) {
     return (
-        <form action="" className="bg-slate-50 space-y-8 w-96 rounded-2xl p-4">
+        <form onSubmit={submitForm} className="bg-slate-50 space-y-8 w-96 rounded-2xl p-4">
             <div>
                 <button
                 className="absolute">
@@ -154,7 +154,7 @@ export function EvaluationForm({ evaluationInfo, setEvaluationInfo, submitForm }
                     />
                 </div>
             </div>
-            <button onClick={submitForm} className="bg-lime-500 text-white w-full rounded-lg p-2">
+            <button type="submit" className="bg-lime-500 text-white w-full rounded-lg p-2">
                 Realizar evaluación
             </button>
         </form>
