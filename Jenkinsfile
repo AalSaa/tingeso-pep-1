@@ -47,9 +47,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh './gradlew test'
+                        sh 'cd Backend && ./gradlew test'
                     } else {
-                        bat './gradlew test'
+                        bat 'cd Backend && ./gradlew test'
                     }
                 }
             }
