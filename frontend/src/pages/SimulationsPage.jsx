@@ -30,7 +30,7 @@ export function SimulationsPage() {
     return (
         <div>
             <div className="flex items-center space-x-4 p-4">
-                <h1 className="text-4xl">Préstamos</h1>
+                <h1 className="text-4xl">Simulaciones</h1>
                 <button onClick={handleClick}
                 className="bg-lime-500 text-white flex rounded-lg gap-4 p-2">
                     <p>Simular préstamo</p>

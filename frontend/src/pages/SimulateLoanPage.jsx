@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { UserSearchForm } from '../features/users/components/UserSearchForm';
 import { LoanTypeSelectorForm } from '../features/loans/components/LoanTypeSelectorForm';
 import { LoanForm } from '../features/loans/components/LoanForm';
+import { getUserByRut } from '../features/users/services/UserService';
 import { postLoan } from '../features/loans/services/LoanService';
 
 export function SimulateLoanPage() {
@@ -41,6 +42,19 @@ export function SimulateLoanPage() {
 
     const [, setLocation] = useLocation();
 
+    const submitUserForm = async (event) => {
+        event.preventDefault();
+        try {
+            const fetchedUser = await getUserByRut(user.rut);
+            if (fetchedUser) {
+                setUser(fetchedUser);
+                console.log(fetchedUser);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const submitForm = async (event) => {
         event.preventDefault();
         try {
@@ -48,7 +62,7 @@ export function SimulateLoanPage() {
             const postedLoan = await postLoan(updatedLoan);
             if (postedLoan) {
                 setLoan(postedLoan);
-                setLocation('/loans');
+                setLocation('/simulations');
             }
         } catch (error) {
             setLoan({});
@@ -70,7 +84,7 @@ export function SimulateLoanPage() {
                 </div>
                 <div className="flex">
                     <div className="flex flex-col h-full">
-                        <UserSearchForm user={user} setUser={setUser} />
+                        <UserSearchForm user={user} setUser={setUser} submitForm={submitUserForm} />
                         <LoanTypeSelectorForm loanType={loanType} setLoanType={setLoanType} />
                         <div className='px-6'>
                             {(user.id || loanType.id) ? (

@@ -1,12 +1,4 @@
-import { useState, useEffect } from "react";
-
-import { getDocumentsByLoanId } from "../../documents/services/DocumentService";
-
 export function LoanForm({ user, loanType, loan, setLoan, submitForm, isSimulation }) {
-    const [documents, setDocuments] = useState([]);
-
-    
-
     return (
         <div>
             
