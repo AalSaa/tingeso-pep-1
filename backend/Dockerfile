@@ -1,9 +1,18 @@
-FROM openjdk:17
+FROM openjdk:17-jdk-slim
 
 WORKDIR /app
 
-COPY build/libs/*.jar app.jar
+COPY build.gradle settings.gradle /app/
 
-EXPOSE 8080
+COPY gradlew /app/gradlew
+COPY gradle /app/gradle
 
-CMD ["sh", "-c", "sleep 10 && java -jar app.jar"]
+COPY src /app/src
+
+RUN chmod +x gradlew
+
+RUN ./gradlew bootJar
+
+EXPOSE 9090
+
+CMD ["java", "-jar", "build/libs/PrestaBancoBackend-0.0.1-SNAPSHOT.jar"]
