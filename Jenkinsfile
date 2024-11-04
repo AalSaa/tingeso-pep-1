@@ -17,9 +17,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'docker build -t aalsaa/presta-banco-backend:lastest .'
+                        sh 'cd backend && docker build -t aalsaa/presta-banco-backend:lastest .'
                     } else {
-                        bat 'docker build -t aalsaa/presta-banco-backend:lastest .'
+                        bat 'cd backend && docker build -t aalsaa/presta-banco-backend:lastest .'
                     }
                 }
                 
@@ -59,9 +59,9 @@ pipeline {
             steps {
                 script {
                     if (isUnix()) {
-                        sh 'cd Frontend && docker build -t aalsaa/presta-banco-frontend:lastest .'
+                        sh 'cd frontend && docker build -t aalsaa/presta-banco-frontend:lastest .'
                     } else {
-                        bat 'cd Frontend && docker build -t aalsaa/presta-banco-frontend:lastest .'
+                        bat 'cd frontend && docker build -t aalsaa/presta-banco-frontend:lastest .'
                     }
                 }
 
