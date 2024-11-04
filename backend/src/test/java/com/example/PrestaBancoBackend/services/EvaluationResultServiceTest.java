@@ -787,7 +787,7 @@ public class EvaluationResultServiceTest {
     }
 
     @Test
-    void testAnalyzeRecentWithdrawals_WithinLimit() {
+    void whenAnalyzeRecentWithdrawals_WithinLimit() {
         // Given
         BigDecimal maximumWithdrawalInSixMonths = BigDecimal.valueOf(5000);
         BigDecimal savingsAccountBalance = BigDecimal.valueOf(20000000);
@@ -800,7 +800,7 @@ public class EvaluationResultServiceTest {
     }
 
     @Test
-    void testAnalyzeRecentWithdrawals_ExceedingLimit() {
+    void whenAnalyzeRecentWithdrawals_ExceedingLimit() {
         // Given
         BigDecimal maximumWithdrawalInSixMonths = BigDecimal.valueOf(6000000);
         BigDecimal savingsAccountBalance = BigDecimal.valueOf(20000000);

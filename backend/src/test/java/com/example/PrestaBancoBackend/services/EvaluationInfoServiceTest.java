@@ -36,7 +36,7 @@ public class EvaluationInfoServiceTest {
     @InjectMocks
     EvaluationInfoService evaluationInfoService;
 
-    private Validator validator;
+    Validator validator;
 
     @BeforeEach
     void setUp() {

@@ -20,10 +20,10 @@ import static org.mockito.Mockito.when;
 
 public class LoanTypeServiceTest {
     @Mock
-    private LoanTypeRepository loanTypeRepository;
+    LoanTypeRepository loanTypeRepository;
 
     @InjectMocks
-    private LoanTypeService loanTypeService;
+    LoanTypeService loanTypeService;
 
     @BeforeEach
     void setUp() {

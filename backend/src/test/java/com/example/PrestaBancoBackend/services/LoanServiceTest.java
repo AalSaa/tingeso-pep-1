@@ -30,16 +30,16 @@ import static org.mockito.Mockito.*;
 
 public class LoanServiceTest {
     @Mock
-    private LoanRepository loanRepository;
+    LoanRepository loanRepository;
     @Mock
-    private UserRepository userRepository;
+    UserRepository userRepository;
     @Mock
-    private LoanTypeRepository loanTypeRepository;
+    LoanTypeRepository loanTypeRepository;
 
     @InjectMocks
-    private LoanService loanService;
+    LoanService loanService;
 
-    private Validator validator;
+    Validator validator;
 
     @BeforeEach
     void setUp() {

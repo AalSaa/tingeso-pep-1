@@ -25,12 +25,12 @@ import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
     @Mock
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @InjectMocks
-    private UserService userService;
+    UserService userService;
 
-    private Validator validator;
+    Validator validator;
 
     @BeforeEach
     void setUp() {
