@@ -49,7 +49,7 @@ pipeline {
                     if (isUnix()) {
                         sh 'cd Backend && ./gradlew test'
                     } else {
-                        bat 'cd Backend && ./gradlew test'
+                        bat 'cd Backend && gradlew.bat test'
                     }
                 }
             }
