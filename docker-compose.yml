@@ -51,10 +51,20 @@ services:
     expose:
       - "8090"
 
-  frontend:
+  frontend1:
     image: aalsaa/presta-banco-frontend:lastest
-    ports:
-        - "3000:80"
+    networks:
+      - app-network
+
+  frontend2:
+    image: aalsaa/presta-banco-frontend:lastest
+    networks:
+      - app-network
+  
+  frontend3:
+    image: aalsaa/presta-banco-frontend:lastest
+    networks:
+      - app-network
   
   nginx-backend:
     image: nginx:latest
@@ -66,6 +76,19 @@ services:
       - backend1
       - backend2
       - backend3
+    networks:
+      - app-network
+
+  nginx-frontend:
+    image: nginx:latest
+    volumes:
+      - ./nginx-frontend.conf:/etc/nginx/nginx.conf
+    ports:
+      - "3000:80"
+    depends_on:
+      - frontend1
+      - frontend2
+      - frontend3
     networks:
       - app-network
 
