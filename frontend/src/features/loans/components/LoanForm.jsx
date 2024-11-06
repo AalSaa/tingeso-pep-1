@@ -54,7 +54,7 @@ export function LoanForm({ user, loanType, loan, setLoan, submitForm, isSimulati
                     </div>
                 </div>
                 <button type="submit" className="bg-lime-500 text-white w-full rounded-lg p-2">
-                    {isSimulation ? 'Simular préstamo' : 'Solicitar préstamo'}
+                    {isSimulation ? 'Simular préstamo (Chile)' : 'Solicitar préstamo'}
                 </button>
             </form>
         </div>
