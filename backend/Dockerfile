@@ -13,6 +13,6 @@ RUN chmod +x gradlew
 
 RUN ./gradlew bootJar
 
-EXPOSE 9090
+EXPOSE 8090
 
 CMD ["java", "-jar", "build/libs/PrestaBancoBackend-0.0.1-SNAPSHOT.jar"]
